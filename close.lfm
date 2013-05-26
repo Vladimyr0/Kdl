@@ -1,0 +1,67 @@
+object CloseForm: TCloseForm
+  Left = 593
+  Height = 120
+  Top = 564
+  Width = 120
+  BorderIcons = []
+  BorderStyle = bsNone
+  Caption = 'CloseForm'
+  ClientHeight = 120
+  ClientWidth = 120
+  Color = 12413
+  FormStyle = fsStayOnTop
+  KeyPreview = True
+  OnClose = FormClose
+  OnKeyDown = FormKeyDown
+  PopupMode = pmExplicit
+  PopupParent = MainForm.Owner
+  Position = poOwnerFormCenter
+  ShowInTaskBar = stNever
+  LCLVersion = '1.0.4.0'
+  object Label1: TLabel
+    Left = 8
+    Height = 26
+    Top = 8
+    Width = 104
+    Alignment = taCenter
+    AutoSize = False
+    Caption = 'Выход:'
+    Font.Color = 15981174
+    Font.Height = -21
+    Font.Name = 'Serif'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object Label2: TLabel
+    Left = 8
+    Height = 26
+    Top = 36
+    Width = 104
+    Alignment = taCenter
+    AutoSize = False
+    Caption = '5 сек.'
+    Font.Color = 15981174
+    Font.Height = -21
+    Font.Name = 'Serif'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object Button1: TButton
+    Cursor = crNo
+    Left = 8
+    Height = 44
+    Top = 68
+    Width = 104
+    Caption = 'Отмена'
+    Color = 16294
+    Font.Color = 9564415
+    Font.Height = -16
+    Font.Name = 'Sans'
+    Font.Style = [fsBold]
+    OnClick = Button1Click
+    ParentFont = False
+    TabOrder = 0
+  end
+end

@@ -1,0 +1,22 @@
+object InForm: TInForm
+  Left = 865
+  Height = 268
+  Top = 262
+  Width = 360
+  BorderIcons = []
+  BorderStyle = bsNone
+  Caption = 'InForm'
+  Color = 8568798
+  DefaultMonitor = dmMainForm
+  FormStyle = fsStayOnTop
+  KeyPreview = True
+  OnDeactivate = FormDeactivate
+  OnKeyDown = FormKeyDown
+  OnMouseDown = FormMouseDown
+  OnMouseMove = FormMouseMove
+  OnMouseUp = FormMouseUp
+  OnPaint = FormPaint
+  OnShow = FormShow
+  ShowInTaskBar = stNever
+  LCLVersion = '1.0.4.0'
+end
