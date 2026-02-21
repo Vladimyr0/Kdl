@@ -1,11 +1,14 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="9"/>
+    <Version Value="12"/>
     <General>
+      <Flags>
+        <CompatibilityMode Value="True"/>
+      </Flags>
       <SessionStorage Value="InProjectDir"/>
-      <MainUnit Value="0"/>
-      <Title Value="kdl"/>
+      <Title Value="Колядинъ Даръ"/>
+      <Scaled Value="True"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
       <Icon Value="0"/>
@@ -15,13 +18,12 @@
     </i18n>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
-      <AutoIncrementBuild Value="True"/>
       <MajorVersionNr Value="1"/>
-      <RevisionNr Value="1"/>
-      <BuildNr Value="79"/>
+      <MinorVersionNr Value="3"/>
+      <BuildNr Value="92"/>
       <Language Value="0419"/>
       <CharSet Value="04B0"/>
-      <StringTable Comments="http://kld.0pk.ru" CompanyName="=SET=" FileDescription="Koladin Dar Linux" InternalName="KDL" LegalCopyright="� Vladimyr" LegalTrademarks="  " OriginalFilename="KDL" ProductName="   " ProductVersion="1.0"/>
+      <StringTable Comments="http://kld.0pk.ru" CompanyName="=SET=" FileDescription="Koladin Dar for Linux" InternalName="KDL" LegalCopyright="© Vladimyr" LegalTrademarks="  " OriginalFilename="KDL" ProductName="   " ProductVersion="1.3"/>
     </VersionInfo>
     <BuildModes Count="2">
       <Item1 Name="Default" Default="True"/>
@@ -51,35 +53,30 @@
             </Debugging>
             <LinkSmart Value="True"/>
           </Linking>
-          <Other>
-            <CompilerPath Value="$(CompPath)"/>
-          </Other>
         </CompilerOptions>
       </Item2>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
-      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
-      <ExcludeFileFilter Value="*.(bak|ppu|o|so);*~;backup"/>
     </PublishOptions>
     <RunParams>
-      <local>
-        <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="/usr/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
-      </local>
+      <FormatVersion Value="2"/>
+      <Modes Count="1">
+        <Mode0 Name="default"/>
+      </Modes>
     </RunParams>
     <RequiredPackages Count="6">
       <Item1>
-        <PackageName Value="FCL"/>
+        <PackageName Value="BGRABitmapPack"/>
       </Item1>
       <Item2>
-        <PackageName Value="SynEdit"/>
+        <PackageName Value="FCL"/>
       </Item2>
       <Item3>
-        <PackageName Value="LazUtils"/>
+        <PackageName Value="SynEdit"/>
       </Item3>
       <Item4>
-        <PackageName Value="BGRABitmapPack"/>
+        <PackageName Value="LazUtils"/>
       </Item4>
       <Item5>
         <PackageName Value="RunTimeTypeInfoControls"/>
@@ -92,7 +89,6 @@
       <Unit0>
         <Filename Value="kdl.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="kdl"/>
       </Unit0>
       <Unit1>
         <Filename Value="kdar.pas"/>
@@ -100,7 +96,6 @@
         <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="kdar"/>
       </Unit1>
       <Unit2>
         <Filename Value="info.pas"/>
@@ -108,7 +103,6 @@
         <ComponentName Value="InForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="info"/>
       </Unit2>
       <Unit3>
         <Filename Value="close.pas"/>
@@ -116,7 +110,6 @@
         <ComponentName Value="CloseForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="close"/>
       </Unit3>
     </Units>
   </ProjectOptions>
@@ -127,26 +120,36 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
+      <Libraries Value="dynportaudio"/>
+      <OtherUnitFiles Value="portaudio;../.lazarus/onlinepackagemanager/packages/BGRABitmap"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <CodeGeneration>
       <SmartLinkUnit Value="True"/>
-      <SmallerCode Value="True"/>
       <TargetOS Value="linux"/>
       <Optimizations>
         <OptimizationLevel Value="3"/>
       </Optimizations>
+      <SmallerCode Value="True"/>
     </CodeGeneration>
     <Linking>
       <Debugging>
         <GenerateDebugInfo Value="False"/>
+        <RunWithoutDebug Value="True"/>
+        <DebugInfoType Value="dsDwarf3"/>
         <StripSymbols Value="True"/>
         <UseExternalDbgSyms Value="True"/>
       </Debugging>
       <LinkSmart Value="True"/>
+      <Options>
+        <PassLinkerOptions Value="True"/>
+        <LinkerOptions Value="-lm"/>
+      </Options>
     </Linking>
     <Other>
-      <CompilerPath Value="$(CompPath)"/>
+      <Verbosity>
+        <ShowHints Value="False"/>
+      </Verbosity>
     </Other>
   </CompilerOptions>
   <Debugging>

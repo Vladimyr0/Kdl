@@ -1,7 +1,7 @@
 object CloseForm: TCloseForm
-  Left = 593
+  Left = 501
   Height = 120
-  Top = 564
+  Top = 378
   Width = 120
   BorderIcons = []
   BorderStyle = bsNone
@@ -11,13 +11,13 @@ object CloseForm: TCloseForm
   Color = 12413
   FormStyle = fsStayOnTop
   KeyPreview = True
-  OnClose = FormClose
-  OnKeyDown = FormKeyDown
   PopupMode = pmExplicit
   PopupParent = MainForm.Owner
   Position = poOwnerFormCenter
   ShowInTaskBar = stNever
-  LCLVersion = '1.0.4.0'
+  LCLVersion = '4.4.0.0'
+  OnClose = FormClose
+  OnKeyDown = FormKeyDown
   object Label1: TLabel
     Left = 8
     Height = 26
@@ -60,8 +60,8 @@ object CloseForm: TCloseForm
     Font.Height = -16
     Font.Name = 'Sans'
     Font.Style = [fsBold]
-    OnClick = Button1Click
     ParentFont = False
     TabOrder = 0
+    OnClick = Button1Click
   end
 end

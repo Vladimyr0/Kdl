@@ -6,14 +6,12 @@ interface
 {$LINKLIB portaudio, static}
 {$L libasound.so}
 
-// {$L libasound.so.2.0.0}
-
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, IntfGraphics, GraphType, LCLIntf, unixutil, LazUTF8, types, info,
   fpimage, process, Buttons, XMLConf, EasyLazFreeType, LazFreeTypeFontCollection,
   close, LCLType, Math, dynlibs, CTypes, BGRABitmap, BGRAFreeType, BGRABitmapTypes,
-  BGRATextFX;
+  BGRATextFX, BGRACustomTextFX;
 
 {$R kd1.res}
 
@@ -162,6 +160,16 @@ type
   end;
   PPaStreamInfo = ^PaStreamInfo;
 
+  PaAudioData = record
+    Tracks : array[1..5] of TResourceStream;
+    StreamIndex : integer;
+    SwapChannels: boolean;
+    SampleQty: integer;
+    CurSample: integer;
+    GLoops: integer;
+  end;
+  PPaAudioData = ^PaAudioData;
+
   { TBmpThread }
 
   TBmpThread = class(TThread)
@@ -202,54 +210,49 @@ type
     ChrDowLabel: TLabel;
     SunImage: TImage;
     XMLConfig1: TXMLConfig;
-    procedure ChrDayBoxChange(Sender: TObject);
-    procedure ChrDayBoxKeyDown(Sender: TObject; var Key: Word;
+    procedure ChrDayBoxChange (Sender: TObject);
+    procedure ChrDayBoxKeyDown (Sender: TObject; var Key: Word;
       {%H-}Shift: TShiftState);
-    procedure ChrDayBoxKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState
+    procedure ChrDayBoxKeyUp (Sender: TObject; var Key: Word; {%H-}Shift: TShiftState
       );
-    procedure ChrMonBoxUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
-    procedure ChrYearBoxChange(Sender: TObject);
-    procedure ChrYearBoxKeyDown(Sender: TObject; var Key: Word;
+    procedure ChrMonBoxUTF8KeyPress (Sender: TObject; var UTF8Key: TUTF8Char);
+    procedure ChrYearBoxChange (Sender: TObject);
+    procedure ChrYearBoxKeyDown (Sender: TObject; var Key: Word;
       {%H-}Shift: TShiftState);
-    procedure ChrYearBoxKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState
+    procedure ChrYearBoxKeyUp (Sender: TObject; var Key: Word; {%H-}Shift: TShiftState
       );
-    procedure FormChangeBounds(Sender: TObject);
-    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
-    procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
-    procedure FormCreate(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
-    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure FormMouseDown(Sender: TObject; Button: TMouseButton;
+    procedure FormChangeBounds (Sender: TObject);
+    procedure FormCloseQuery (Sender: TObject; var CanClose: boolean);
+    procedure FormCreate (Sender: TObject);
+    procedure FormDestroy (Sender: TObject);
+    procedure FormKeyDown (Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormMouseDown (Sender: TObject; Button: TMouseButton;
       {%H-}Shift: TShiftState; X, Y: Integer);
-    procedure FormMouseMove(Sender: TObject; {%H-}Shift: TShiftState; X, Y: Integer);
-    procedure FormMouseUp(Sender: TObject; Button: TMouseButton;
+    procedure FormMouseMove (Sender: TObject; {%H-}Shift: TShiftState; X, Y: Integer);
+    procedure FormMouseUp (Sender: TObject; Button: TMouseButton;
       {%H-}Shift: TShiftState; X, Y: Integer);
-    procedure FormPaint(Sender: TObject);
-    procedure FormResize(Sender: TObject);
-    procedure SlvDayBoxChange(Sender: TObject);
-    procedure SlvDayBoxKeyDown(Sender: TObject; var Key: Word;
+    procedure FormPaint (Sender: TObject);
+    procedure FormResize (Sender: TObject);
+    procedure SlvDayBoxChange (Sender: TObject);
+    procedure SlvDayBoxKeyDown (Sender: TObject; var Key: Word;
       {%H-}Shift: TShiftState);
-    procedure SlvDayBoxKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState
+    procedure SlvDayBoxKeyUp (Sender: TObject; var Key: Word; {%H-}Shift: TShiftState
       );
-    procedure SlvDayBoxUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
-    procedure SlvMonBoxUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
-    procedure SlvTimeButtonClick(Sender: TObject);
-    procedure SlvYearBoxChange(Sender: TObject);
-    procedure SlvYearBoxKeyDown(Sender: TObject; var Key: Word;
+    procedure SlvDayBoxUTF8KeyPress (Sender: TObject; var UTF8Key: TUTF8Char);
+    procedure SlvMonBoxUTF8KeyPress (Sender: TObject; var UTF8Key: TUTF8Char);
+    procedure SlvTimeButtonClick (Sender: TObject);
+    procedure SlvYearBoxChange (Sender: TObject);
+    procedure SlvYearBoxKeyDown (Sender: TObject; var Key: Word;
       {%H-}Shift: TShiftState);
-    procedure SlvYearBoxKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState
+    procedure SlvYearBoxKeyUp (Sender: TObject; var Key: Word; {%H-}Shift: TShiftState
       );
-    procedure Timer_100HzTimer(Sender: TObject);
-    procedure Timer_10HzTimer(Sender: TObject);
-    procedure Timer_2HzTimer(Sender: TObject);
+    procedure Timer_100HzTimer (Sender: TObject);
+    procedure Timer_10HzTimer (Sender: TObject);
+    procedure Timer_2HzTimer (Sender: TObject);
   private
     { private declarations }
   public
     { public declarations }
-    procedure AppDeactivate (Sender: TObject);
-    procedure EndSession (Sender: TObject);
-    procedure QueryEndSession (var {%H-}Cancel: boolean);
-    constructor Create (TheOwner: TComponent); override;
     procedure CalcClock (CurrTime: single);
     function Chr2JD: double;
     function Slv2JD: double;
@@ -259,7 +262,7 @@ type
     procedure RiseSet (latitud, longitud: single; rs_date, timezone: double; out
       sunrise, sunset, twilight0, twilight1, moonrise, moonset, m_phase: single);
     function OpenSound: PaError;
-    function PlaySound (SoundNumber, Repeats: integer): PaError;
+    function PlaySound (SoundNumber, Repeats: integer; SwapChannels: boolean): PaError;
     procedure CalMoving;
     procedure SaveSettings;
     procedure DisEnAbleControls (Enabl: boolean);
@@ -270,47 +273,44 @@ type
     procedure InvokeInForm (dposition: TPoint);
   end;
 
-// function Pa_GetVersion():CInt32 ; cdecl;
-
 const
   KolDar = 'Колядинъ Даръ';
-  About = 'Программа “' + KolDar + '” переводит день, месяц и год ' +
-    'по гражданскому летоисчислению в России (Юлианский календарь до 1-го ' +
-    'февраля 1918 года и Григорианский после) в Славянское летоисчисление ' +
-    '(от Сотворения Мира в Звёздном Храме, или С.М.З.Х.) и обратно, а также ' +
-    'рисует календарь на 1 Славянский сороковник, текущее время по Славянскому ' +
-    'и гражданскому времяисчислению, позволяет прочесть описание каждого лета ' +
-    'в Круголете, месяца, дня и часа, а также ПОСТов и праздников. ^^Автор ' +
-    'алгоритма: Коляда ^Программирование на языке Паскаль: Владимiръ ^Версия ' +
-    '1.0 ^Писано лѣта 7521-го.';
+  About = 'Программа “' + KolDar + '” переводитъ дѣнь, месяцъ и годъ ' +
+    'по гражданскому лѣтоисчисленiю въ Россiи (Юлiанскiй календарь до февраля 1-го ' +
+    'числа года 1918-го, и Григорiанскiй послѣ) въ Славяно-Арiйское лѣтоисчисленiе ' +
+    '(отъ Сотворенiя Мира въ Звёздномъ Храмѣ, или С.М.З.Х.) и обратно, а также ' +
+    'рисуетъ календарь на 1 Славянскiй сороковникъ, позволяетъ прочесть описанiе ' +
+    'каждаго лѣта въ Круголѣтѣ, сороковника, чертога, дня и часа, а также ПОСТовъ ' +
+    'и праздниковъ. ^^Авторъ алгоритма: Коляда ^Программированiе на языке Паскаль: ' +
+    'Владимiръ ^Версия 1.3 ^Писано лѣта 7521-го.';
   NoData = '< ... >';
   Dows: array[0..8] of string = ('Пн', 'Вт', 'Тр', 'Чт', 'Пт', 'Шс', 'См', 'Ос', 'Нд');
-  DowsChr: array[0..6] of string = ('Понедельник', 'Вторник', 'Среда', 'Четверг',
+  DowsChr: array[0..6] of string = ('Понедѣльникъ', 'Вторникъ', 'Среда', 'Четвергъ',
                                     'Пятница', 'Суббота', 'Воскресенье');
   DowsSlv: array[0..8] of string = ('Понедѣльникъ', 'Вторникъ', 'Тритейникъ',
-          'Четвѣрикъ', 'Пятница', 'Шестица', 'Седьмица', 'Осьмица', 'Недѣля');
-  MonthsChr: array[0..11] of string = ('Январь', 'Февраль', 'Март', 'Апрель',
-    'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь');
+          'Четверикъ', 'Пятница', 'Шестица', 'Седьмица', 'Осьмица', 'Недѣля');
+  MonthsChr: array[0..11] of string = ('Генварь', 'Февраль', 'Мартъ', 'Апрѣль',
+    'Май', 'Iюнь', 'Iюль', 'Августъ', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь');
   MonthsSlv: array[0..8] of string = ('Рамхатъ', 'Айлѣтъ', 'Бейлѣтъ', 'Гэйлѣтъ',
            'Дайлѣтъ', 'Элѣтъ', 'Вэйлѣтъ', 'Хейлѣтъ', 'Тайлѣтъ');
   FestChars: array [0..3] of string = ('Д', 'Н', 'П', 'Р');
-  Text_No = 'нет';
-  Text_Always = 'всегда ';
+  Text_No = 'нѣтъ';
+  Text_Always = 'всѣгда ';
   Text_Visible = Text_Always + 'видимо';
   Text_Invisible = Text_Always + 'невидимо';
   Text_VisibleM = Text_Always + 'видима';
   Text_InvisibleM = Text_Always + 'невидима';
-  Text_Bright = Text_Always + 'светло';
-  Text_Dark = Text_Always + 'темно';
-  CasualDay: TBGRAPixel  =  (blue:230; green:229; red:163; alpha:255); // light cyan
-  FestalDay: TBGRAPixel  =  (blue:225; green:204; red:208; alpha:255); // light pink
-  CasualNum: TBGRAPixel  =  (blue:153; green:51; red:0; alpha:255);    // dark blue
-  FestalNum: TBGRAPixel  =  (blue:44; green:62; red:222; alpha:255);   // dark red
-  TodayBorder: TBGRAPixel = (blue:51; green:153; red:0; alpha:255);    // dark green
-  PressedBorder: TBGRAPixel = (blue:171; green:194; red:74; alpha:255);// light green
-  CalPoster: TBGRAPixel  =  (blue:0; green:153; red:153; alpha:255);   // light yellow
-  PostLine: TBGRAPixel   =  (blue:0; green:255; red:255; alpha:90);    // light yellow
-  VeilHaze: TBGRAPixel   =  (blue:185; green:172; red:122; alpha:127); // fuzzy gray
+  Text_Bright = Text_Always + 'свѣтло';
+  Text_Dark = Text_Always + 'тёмно';
+  CasualDay: TBGRAPixel  =  (red:163; green:229; blue:230; alpha:255); // light cyan
+  FestalDay: TBGRAPixel  =  (red:208; green:204; blue:225; alpha:255); // light pink
+  CasualNum: TBGRAPixel  =  (red:0; green:51; blue:153; alpha:255);    // dark blue
+  FestalNum: TBGRAPixel  =  (red:222; green:62; blue:44; alpha:255);   // dark red
+  TodayBorder: TBGRAPixel = (red:0; green:153; blue:51; alpha:255);    // dark green
+  PressedBorder: TBGRAPixel = (red:74; green:194; blue:171; alpha:255);// light green
+  CalPoster: TBGRAPixel  =  (red:153; green:153; blue:0; alpha:255);   // light yellow
+  PostLine: TBGRAPixel   =  (red:255; green:255; blue:0; alpha:90);    // light yellow
+  VeilHaze: TBGRAPixel   =  (red:122; green:172; blue:185; alpha:127); // fuzzy gray
 
   Arrows_visible = 3;         // time to see arrows on the side (* 0.5 s)
   Foldedsize   = 160;         // minimum size of folded form
@@ -416,15 +416,15 @@ var
   ssvitoks: array [0..2] of TBGRABitmap;         // отмасштабированные части свитка
   sunbmp, stretchedsun, fern, fernbmp, sdow, clockbmp, textbmp, monthbmp,
   foldbmp, foldbmp1, sfoldbmp, sfoldbmp1, textbmpjammed, textbmpheader,
-  textbmpfooter: TBGRABitmap;
+  textbmpfooter, mute, mutebmp: TBGRABitmap;
   pattern, PatternImage, defaultsize, startgesture: TPoint;
   patstep: TPointF;
   longshapebmp: TBitmap;
-  folded, folding, folding1, gesture, rolling, scrolling, tomorrow: boolean;
+  folded, folding, folding1, folding_left, gesture, rolling, scrolling, tomorrow: boolean;
   foldbmp_tout, arrbmp_tout: integer;  // unit = 0.5 sec
   oldsize: TSize;
   BlockChangeEvent, IsTodayDate, Tick1, Tick2: boolean;
-  After18Now, After18Old, JustStarted, KeyPressed: boolean;
+  After18Now, After18Old, JustStarted, JustChanged, KeyPressed: boolean;
   TodayDate, LetoLabel, LetoLabel1, LetoLabelP, LetoLabelP1,
   PalaceLabel, PalaceLabel1, FestLabel: string;
   LetoNum, FontSize, SunTick, PopTick: integer;
@@ -433,22 +433,21 @@ var
   InfCalPos, InfBegPos, InfCurPos, InfPrePos, InfOriPos, InfJogPos,
   InfSpeed, MaxRollTime: TPoint;
   RollTime, ScrollTime, InfRollTime, limitx, limity, SorWid, SorHei,
-  PressedDay, InformatedDay, MainFormLeft, MainFormTop, CurCurTime: integer;
+  PressedDay, InformatedDay: integer;
   deltas, ideltas: array [0..9] of TPoint;
   SlvYear, SlvMonth, SlvDay, SlvDow, LetoInCircle, Palace, CurPos: integer;
-  JulDay, SlvTime, CurTime: double;
+  JulDay, SlvTime, CurTime, OldCurTime: double;
   Latitude, Longtitude, T_Zone, SunPosition: single;
   SRize, SSet, TRise, TSet, MRise, MSet, MPhase: single;
   threadrunning, AttractionX, AttractionY, InfAttrX, InfAttrY, partialredraw,
-  daydraw, settingschanged: boolean;
+  daydraw, ClockWise: boolean;
   Description, STitle, Footer, Location, DLabel: string;
   DescrList: TStringList;
   SvitokMaxHeight, SvitokMinHeight, SvitokHeight, LetoOffset, LetoOffset1,
   PalaceOffset, PalaceOffset1, DowOffset, StartString, StringStep, SwitchX,
-  SwitchKind, FlipToX, NumbersHeight, CurJulDay, CloseCount: integer;
-  AudioStreams: array [1..5] of TResourceStream;
+  SwitchKind, FlipToX, NumbersHeight, CurJulDay, CloseCount, End_Left: integer;
   Stream: PPaStream;
-  SampleRate, SampleQty, CurSample, GLoops, Cucked, LongPressed, StreamIndex: integer;
+  SampleRate, Cucked, LongPressed, OnTopCount: integer;
   EnableSound, OnTop, ScaleCorrection, MutexFlag: boolean;
   Scale: single; // масштаб окна
   Scale_SIL, Scale_SIT, Scale_SIW, Scale_SIH, Scale_SDL, Scale_SDT, Scale_SDH,
@@ -456,6 +455,8 @@ var
   Scale_NIT, Scale_NIW, Scale_NIH, Scale_SBL, Scale_SBT, Scale_SBW, Scale_SBH,
   Scale_CIT, Scale_CIH, Scale_WIT, Scale_WIH, Scale_CLT, Scale_CLW, Scale_CLH,
   Scale_SLT, Scale_SLH, Scale_CTL, Scale_CTW, Scale_VMW, DefFontSize: integer;
+  Data: PaAudioData;
+  DataPointer: PPaAudioData;
 
 implementation
 
@@ -496,28 +497,38 @@ var
   i: culong;
   buf: array [0..3] of byte;
   aflag: boolean;
+  finished: boolean;
+  LocalDataPointer: PPaAudioData;
 begin
   result := CInt32 (paContinue);
+  LocalDataPointer := PPaAudioData (UserData);
   OutBuffer := PCInt16 (OutputBuffer);
   buf[0] := 0;
   buf[1] := 0;
   buf[2] := 0;
   buf[3] := 0;
   aflag := false;
+  finished := false;
   for i := 0 to FramesPerBuffer - 1 do begin
     if not aflag then try
-      if (CurSample < SampleQty)
-            and (AudioStreams[StreamIndex].Read (buf, 4) = 4) then begin
-         OutBuffer^ := (short (buf[1]) shl 8) or short (buf[0]);
+      if (LocalDataPointer^.CurSample < LocalDataPointer^.SampleQty)
+            and (LocalDataPointer^.Tracks[LocalDataPointer^.StreamIndex].Read (buf, 4) = 4) then begin
+         if LocalDataPointer^.SwapChannels then
+            OutBuffer^ := (short (buf[3]) shl 8) or short (buf[2])
+         else
+            OutBuffer^ := (short (buf[1]) shl 8) or short (buf[0]);
          Inc (OutBuffer);
-         OutBuffer^ := (short (buf[3]) shl 8) or short (buf[2]);
+         if LocalDataPointer^.SwapChannels then
+            OutBuffer^ := (short (buf[1]) shl 8) or short (buf[0])
+         else
+            OutBuffer^ := (short (buf[3]) shl 8) or short (buf[2]);
          Inc (OutBuffer);
-         Inc (CurSample, 4);
-         if CurSample >= SampleQty then begin
-            if GLoops > 0 then begin
-               CurSample := 0;
-               AudioStreams[StreamIndex].Seek ($2C, soFromBeginning);
-               Dec (GLoops);
+         Inc (LocalDataPointer^.CurSample, 4);
+         if LocalDataPointer^.CurSample >= LocalDataPointer^.SampleQty then begin
+            if LocalDataPointer^.GLoops > 0 then begin
+               LocalDataPointer^.CurSample := 0;
+               LocalDataPointer^.Tracks[LocalDataPointer^.StreamIndex].Seek ($2C, soFromBeginning);
+               Dec (LocalDataPointer^.GLoops);
             end else MainForm.Timer_100Hz.Enabled := true;
          end;
       end else begin
@@ -525,11 +536,13 @@ begin
          Inc (OutBuffer);
          OutBuffer^ := 0;
          Inc (OutBuffer);
+         finished := true;
       end;
     except
       aflag := true;
     end;
   end;
+  if finished or aflag then result := CInt32 (paComplete);
 end;
 
 procedure StreamFinished ({%H-}UserData: pointer); cdecl;
@@ -582,12 +595,12 @@ begin
   buf[1] := 0;
   buf[2] := 0;
   buf[3] := 0;
-  AudioStreams[1].Seek ($18, soFromBeginning);
-  if AudioStreams[1].Read (buf, 4) = 4 then
+  DataPointer^.Tracks[1].Seek ($18, soFromBeginning);
+  if DataPointer^.Tracks[1].Read (buf, 4) = 4 then
      SampleRate := (Cardinal (buf[3]) shl 24) or (Cardinal (buf[2]) shl 16) or
                    (Cardinal (buf[1]) shl 8 ) or (Cardinal (buf[0]));
   result := Pa_OpenStream (@Stream, nil, @OutputParameters, SampleRate,
-    FramesPerBuffer, paClipOff, PPaStreamCallback (@PaAudioCallback), nil);
+    FramesPerBuffer, paClipOff, PPaStreamCallback (@PaAudioCallback), DataPointer);
   if result <> 0 then begin
      Pa_Terminate ();
      Stream := nil;
@@ -602,7 +615,8 @@ begin
   end;
 end;
 
-function TMainForm.PlaySound (SoundNumber, Repeats: integer): PaError; // playing sound!!! :)
+function TMainForm.PlaySound (SoundNumber, Repeats: integer;
+  SwapChannels: boolean): PaError;                        // playing sound!!! :)
 var
   buf: array [0..3] of byte;
   i: integer;
@@ -621,21 +635,22 @@ begin
         end;
      end;
   end;
-  StreamIndex := SoundNumber;
-  GLoops := Repeats;
+  DataPointer^.StreamIndex := SoundNumber;
+  DataPointer^.GLoops := Repeats;
+  DataPointer^.SwapChannels := SwapChannels;
   result := CInt32 (paNoError);
   buf[0] := 0;
   buf[1] := 0;
   buf[2] := 0;
   buf[3] := 0;
-  SampleQty := 0;
-  CurSample := 0;
-  AudioStreams[StreamIndex].Seek ($28, soFromBeginning);
-  if AudioStreams[StreamIndex].Read (buf, 4) = 4 then
-     SampleQty := (Cardinal (buf[3]) shl 24) or (Cardinal (buf[2]) shl 16) or
+  DataPointer^.SampleQty := 0;
+  DataPointer^.CurSample := 0;
+  DataPointer^.Tracks[DataPointer^.StreamIndex].Seek ($28, soFromBeginning);
+  if DataPointer^.Tracks[DataPointer^.StreamIndex].Read (buf, 4) = 4 then
+     DataPointer^.SampleQty := (Cardinal (buf[3]) shl 24) or (Cardinal (buf[2]) shl 16) or
                   (Cardinal (buf[1]) shl 8 ) or (Cardinal (buf[0]));
-  if SampleQty > 0 then begin
-     AudioStreams[StreamIndex].Seek ($2C, soFromBeginning);
+  if DataPointer^.SampleQty > 0 then begin
+     DataPointer^.Tracks[DataPointer^.StreamIndex].Seek ($2C, soFromBeginning);
      if (Stream <> nil) and (Pa_IsStreamActive (Stream) <> CInt32 (paComplete)) then begin
         result := Pa_StartStream (Stream);
      end;
@@ -659,7 +674,7 @@ var                       // called on form size change (not folding!)
   i, sx, sy, sy1: integer;
   ox, dx: single;
   drawer: TBGRAFreeTypeDrawer;
-  fx: TBGRATextEffect;
+  fx: TBGRACustomTextEffect;
   tmbm: TBGRABitmap;
   dowstring: string;
   ecolor: TFPColor;
@@ -682,8 +697,8 @@ begin
     fx := drawer.CreateTextEffect (numstr, f4);
     fx.DrawShadow (tmbm, 2, 2, 3, BGRABlack);
     fx.Draw (tmbm, 0, 0, CasualNum);
-    fx.Free;
-    drawer.Free;
+    if fx <> nil then fx.Free;
+    if drawer <> nil then drawer.Free;
     BGRAReplace (DayNums[i,0], tmbm);
     tmbm := TBGRABitmap.Create (sx, sy, BGRAPixelTransparent);
     tmbm.FontQuality := fqFineAntialiasing;
@@ -691,8 +706,8 @@ begin
     fx := drawer.CreateTextEffect (numstr, f4);
     fx.DrawShadow (tmbm, 2, 2, 3, BGRABlack);
     fx.Draw (tmbm, 0, 0, FestalNum);
-    fx.Free;
-    drawer.Free;
+    if fx <> nil then fx.Free;
+    if drawer <> nil then drawer.Free;
     BGRAReplace (DayNums[i,1], tmbm);
   end;
   if f4 <> nil then with f4 do begin    // set font properties
@@ -710,8 +725,8 @@ begin
     fx.DrawShadow (tmbm, 10, 10, 10, ColorToBGRA (clBlack));
     fx.DrawOutline (tmbm, 5, 5, ColorToBGRA (clWhite));
     fx.Draw (tmbm, 5, 5, CalPoster);
-    fx.Free;
-    drawer.Free;
+    if fx <> nil then fx.Free;
+    if drawer <> nil then drawer.Free;
     BGRAReplace (MonNames[i], tmbm);
   end;
   sx := sx div 4;
@@ -730,8 +745,8 @@ begin
     fx.DrawOutline (tmbm, 5, 5, ColorToBGRA (clWhite));
     fx.Draw (tmbm, 5, 5, CalPoster);
     BGRAReplace (YearNums[i], tmbm);
-    fx.Free;
-    drawer.Free;
+    if fx <> nil then fx.Free;
+    if drawer <> nil then drawer.Free;
   end;
   tmbm := TBGRABitmap.Create (Round (Scale_SIW * NScale),
                               Round (Scale_WIH * NScale), BGRAPixelTransparent);
@@ -755,7 +770,7 @@ begin
            Round ((ox + dx) * i + (ox - f4.TextWidth (Dows[i])) / 2), sy1,
            ecolor, [ftaTop, ftaLeft]);
   end;
-  drawer.Free;
+  if drawer <> nil then drawer.Free;
   BGRAReplace (sdow, tmbm);
   if f4 <> nil then with f4 do begin    // set font properties
     SizeInPixels := Round (11 * NScale);
@@ -771,8 +786,8 @@ begin
     drawer := TBGRAFreeTypeDrawer.Create (tmbm);
     fx := drawer.CreateTextEffect (FestChars[i], f4);
     fx.Draw (tmbm, 0, 0, ColorToBGRA (clMaroon));
-    fx.Free;
-    drawer.Free;
+    if fx <> nil then fx.Free;
+    if drawer <> nil then drawer.Free;
     BGRAReplace (FestBmps[i], tmbm);
   end;
 end;
@@ -963,7 +978,7 @@ begin
 //             ShowMessage ('PutImage #5');
           end;
     end;
-    bufbmp.free;
+    if bufbmp <> nil then bufbmp.free;
   end else begin
     i := 0;
     while MutexFlag and (i < 1000) do sleep (1);
@@ -977,6 +992,7 @@ function FormTime (TRiset, TSiset: single; Event: integer; SlavTime: boolean): s
 var                          // 0 - Луна, 1 - Солнце, 2 - Сумерки
   t: double;
 begin                       // преобразование времени засхода в человеческий вид
+  result := '';
   if (TRiset < 0) and (TSiset < 0) then case Event of
     0: if TRiset < -1 then result := Text_InvisibleM else result := Text_VisibleM;
     1: if TRiset < -1 then result := Text_Invisible else result := Text_Visible;
@@ -1076,57 +1092,24 @@ end;
 
 { TMainForm }
 
-procedure TMainForm.AppDeactivate (Sender: TObject);
-begin
-  if InForm.Visible then begin
-     InForm.Close;
-     if popping and not (rolling or folding or scrolling or ((CalSpeed.x <> 0)
-        or (CalSpeed.y <> 0) or AttractionX or AttractionY)) then
-           Timer_10Hz.Enabled := false;
-     popping := false;
-     if textbmp <> nil then textbmp.Free;
-     if textbmpjammed <> nil then textbmpjammed.Free;
-     if textbmpheader <> nil then textbmpheader.Free;
-     if textbmpfooter <> nil then textbmpfooter.Free;
-     textbmp := nil;
-     textbmpjammed := nil;
-     textbmpheader := nil;
-     textbmpfooter := nil;
-  end;
-end;
-
-procedure TMainForm.QueryEndSession (var Cancel: boolean);
-begin
-  if Tag = 0 then SaveSettings;
-end;
-
-procedure TMainForm.EndSession (Sender: TObject);
-begin
-  if Tag = 0 then SaveSettings;
-end;
-
-constructor TMainForm.Create (TheOwner: TComponent);
-begin
-  inherited Create (TheOwner);
-  Application.OnDeactivate := @AppDeactivate;
-  Application.OnEndSession := @EndSession;
-  Application.OnQueryEndSession := @QueryEndSession;
-end;
-
-procedure TMainForm.FormCreate(Sender: TObject);
+procedure TMainForm.FormCreate (Sender: TObject);
 var
   sunstream, fernstream, foldstream, foldstream1, stringstream,
-  fontstream, svitstream, arrstream: TResourceStream;
+  fontstream, svitstream, arrstream, mutestream: TResourceStream;
   i, j, k: integer;
   buflist: TStringList;
   s: string;
   n: single;
 begin
   inherited;
+  DataPointer := @Data;
+  for i := 1 to 5 do
+    Data.Tracks[i] := TResourceStream.Create (hInstance, 'au' + IntToStr (i), RT_RCDATA);
   Stream := nil;
   folded := false;
   folding := false;
   folding1 := false;
+  folding_left := false;
   gesture := false;
   rolling := false;
   scrolling := false;
@@ -1148,10 +1131,12 @@ begin
   arrbmp_tout := -1;
   Latitude := 55.75;      // coordinates of Moscow
   Longtitude := 37.62;
-  T_Zone := 4;
+  T_Zone := Tzseconds div 3600;
   Location := 'Москва';
   JustStarted := true;
+  JustChanged := false;
   IsTodayDate := false;
+  ClockWise := false;
   TodayDate := '';
   SlvDow := - 1;
   SunTick := 5;           // Sun will be drawn after 2.5 sec from start
@@ -1170,12 +1155,12 @@ begin
   PalaceOffset1 := 130;
   StringStep := 18;
   Cucked := -1;
-  StreamIndex := 1;
+  DataPointer^.StreamIndex := 1;
   CurJulDay := 0;
   CloseCount := 0;
   DLabel := '';
   Tag := 0;
-  settingschanged := false;
+  DataPointer^.SwapChannels := false;
   SvitokMaxHeight := Round (Screen.Height * 0.75);
   limitx := SorokovnikImage.Width * 2 + SorokovnikImage.Width div 9;
   limity := SorokovnikImage.Height * 2 + SorokovnikImage.Height div 2;
@@ -1230,33 +1215,33 @@ begin
   try
     sunbmp := TBGRABitmap.Create (sunstream);
   finally
-    sunstream.Free;
+    if sunstream <> nil then sunstream.Free;
   end;
   stretchedsun := TBGRABitmap.Create (1, 1, BGRAPixelTransparent);
   fernstream := TResourceStream.Create (hInstance, 'bm2', RT_RCDATA);
   try
     fernbmp := TBGRABitmap.Create (fernstream);
   finally
-    fernstream.Free;
+    if fernstream <> nil then fernstream.Free;
   end;
   foldstream := TResourceStream.Create (hInstance, 'bm3', RT_RCDATA);
   try
     foldbmp := TBGRABitmap.Create (foldstream);
   finally
-    foldstream.Free;
+    if foldstream <> nil then foldstream.Free;
   end;
   foldstream1 := TResourceStream.Create (hInstance, 'bm4', RT_RCDATA);
   try
     foldbmp1 := TBGRABitmap.Create (foldstream);
   finally
-    foldstream1.Free;
+    if foldstream1 <> nil then foldstream1.Free;
   end;
   for i := 0 to 2 do begin
     svitstream  := TResourceStream.Create (hInstance, 'bm' + IntToStr (i + 5), RT_RCDATA);
     try
       svitoks[i] := TBGRABitmap.Create (svitstream);
     finally
-      svitstream.Free;
+      if svitstream <> nil then svitstream.Free;
     end;
   end;
   for i := 0 to 3 do begin
@@ -1264,12 +1249,15 @@ begin
     try
       arrbmp[i] := TBGRABitmap.Create (arrstream);
     finally
-      arrstream.Free;
+      if arrstream <> nil then arrstream.Free;
     end;
   end;
-  for i := 1 to 5 do
-    AudioStreams[i] := TResourceStream.Create (hInstance,
-                       'au' + IntToStr (i), RT_RCDATA);
+  mutestream := TResourceStream.Create (hInstance, 'bm12', RT_RCDATA);
+  try
+    mutebmp := TBGRABitmap.Create (mutestream);
+  finally
+    if mutestream <> nil then mutestream.Free;
+  end;
   sfoldbmp := TBGRABitmap.Create;
   sfoldbmp1 := TBGRABitmap.Create;
   try
@@ -1292,25 +1280,27 @@ begin
     f3.Name := 'Lock Clock';
     f4.Name := 'CyrillicOld';           // duplicate font for 2nd thread
   except on ex: Exception do begin
-    FreeAndNil (f1);
-    FreeAndNil (f2);
-    FreeAndNil (f3);
-    FreeAndNil (f4);
-    FreeAndNil (fonts1);
+    if f1 <> nil then FreeAndNil (f1);
+    if f2 <> nil then FreeAndNil (f2);
+    if f3 <> nil then FreeAndNil (f3);
+    if f4 <> nil then FreeAndNil (f4);
+    if fonts1 <> nil then FreeAndNil (fonts1);
     MessageDlg ('Font error', ex.Message, mtError, [mbOk], 0);
     end;
   end;
   if f1 <> nil then with f1 do begin    // set font properties
-    Hinted := false;
+    Hinted := true;
     ClearType := true;
     Quality := grqHighQuality;
     SmallLinePadding := false;
+    KerningEnabled := true;
+    KerningFallbackEnabled := true;
     SizeInPixels := 20;
     Style := [];
     WidthFactor := 0.9;
   end;
   if f2 <> nil then with f2 do begin    // set font properties
-    Hinted := false;
+    Hinted := true;
     ClearType := true;
     Quality := grqHighQuality;
     SmallLinePadding := false;
@@ -1319,7 +1309,7 @@ begin
 //    WidthFactor := 0.9;
   end;
   if f3 <> nil then with f3 do begin    // set font properties
-    Hinted := false;
+    Hinted := true;
     ClearType := true;
     Quality := grqHighQuality;
     SmallLinePadding := false;
@@ -1328,10 +1318,12 @@ begin
     WidthFactor := 0.9;
   end;
   if f4 <> nil then with f4 do begin    // set font properties
-    Hinted := false;
+    Hinted := true;
     ClearType := true;
     Quality := grqHighQuality;
     SmallLinePadding := false;
+    KerningEnabled := true;
+    KerningFallbackEnabled := true;
     SizeInPixels := 20;
     Style := [];
     WidthFactor := 0.9;
@@ -1425,7 +1417,7 @@ begin
       end; // main 'case'
     end;
   finally
-    stringstream.Free;
+    if stringstream <> nil then stringstream.Free;
   end;
   CalPosition.X := 0;
   CalPosition.Y := 0;
@@ -1449,10 +1441,11 @@ begin
   BmpThread := TBmpThread.Create (true);
   if Assigned (BmpThread.FatalException) then raise BmpThread.FatalException;
   try with XMLConfig1 do begin
+    FileName := ExtractFileName (Application.ExeName) + '.xml';
     OpenKey ('Location');
-    s := GetValue ('Place', '');
+    s := string (GetValue ('Place', ''));
     if s <> '' then Location := s;
-    s := GetValue ('Latitude', '*');
+    s := string (GetValue ('Latitude', '*'));
     if s <> '*' then begin
        n := StrToFloatDef (s, 55.75);
        if (n >= -360) and (n <= 360) then begin
@@ -1461,7 +1454,7 @@ begin
           Latitude := n;
        end;
     end;
-    s := GetValue ('Longitude', '*');
+    s := string (GetValue ('Longitude', '*'));
     if s <> '*' then begin
        n := StrToFloatDef (s, 37.62);
        if (n >= -360) and (n <= 360) then begin
@@ -1471,10 +1464,11 @@ begin
        end;
     end;
     CloseKey;
+    T_Zone := Tzseconds div 3600;
     OpenKey ('Time_Zone');
-    s := GetValue ('GMT', '*');
+    s := string (GetValue ('GMT', '*'));
     if s <> '*' then begin
-       n := StrToFloatDef (s, 4.0);
+       n := StrToFloatDef (s, Tzseconds div 3600);
        if (n >= -24) and (n <= 24) then begin
           if n < -12 then n := n + 24;
           if n > 12 then n := n - 24;
@@ -1488,7 +1482,7 @@ begin
     OpenKey ('Window');
     OnTop := GetValue ('OnTop', false);
     if OnTop then MainForm.FormStyle := fsSystemStayOnTop;
-    s := GetValue ('Scale', '*');
+    s := string (GetValue ('Scale', '*'));
     if s <> '*' then begin
        n := StrToFloatDef (s, 1.0);
        if (n >= 1) and (n <= 2) then begin
@@ -1513,19 +1507,26 @@ begin
     CloseKey;
   end except
   end;
-  MainFormLeft := MainForm.Left;
-  MainFormTop := MainForm.Top;
+  try with XMLConfig1 do begin
+    OpenKey ('OldClock');
+    ClockWise := GetValue ('Enabled', false);
+    CloseKey;
+  end except
+  end;
   if EnableSound then OpenSound;
   PatternImage.X := fernbmp.Bitmap.Width;
   PatternImage.Y := fernbmp.Bitmap.Height;
   CalcNumbers (Scale);
   CalcBitmap (Scale_SIW, Scale_SIH, false);
   FormResize (Sender);
+  End_Left := MainForm.Left;
   fern := fernbmp.Resample (Round (patstep.x + 0.5), Round (patstep.y + 0.5),
           rmFineResample) as TBGRABitmap;
+  mute := mutebmp.Resample (Round (mutebmp.Width * Scale / 2),
+          Round (mutebmp.Height * Scale / 2), rmFineResample) as TBGRABitmap;
 end;
 
-procedure TMainForm.FormDestroy(Sender: TObject);
+procedure TMainForm.FormDestroy (Sender: TObject);
 var
   i, j: integer;
 begin
@@ -1538,41 +1539,41 @@ begin
     sleep (10);
   end;
   if (Stream <> nil) then Pa_Terminate ();
-  FreeAndNil (f1);
-  FreeAndNil (f2);
-  FreeAndNil (f3);
-  FreeAndNil (f4);
-  FreeAndNil (fonts1);
-  sdow.Free;
-  sunbmp.Free;
-  stretchedsun.Free;
-  fern.Free;
-  fernbmp.Free;
-  foldbmp.Free;
-  foldbmp1.Free;
-  monthbmp.Free;
-  clockbmp.Free;
-  longshapebmp.Free;
-  for i := 1 to 41 do for j := 0 to 1 do DayNums[i,j].Free;
-  for i := 0 to 8 do MonNames[i].Free;
-  for i := 0 to 9 do YearNums[i].Free;
-  for i := 0 to 3 do FestBmps[i].Free;
-  for i := 0 to 3 do arrbmp[i].Free;
-  for i := 0 to 3 do sarrbmp[i].Free;
-  for i := 0 to 2 do svitoks[i].Free;
-  for i := 0 to 2 do ssvitoks[i].Free;
+  if f1 <> nil then FreeAndNil (f1);
+  if f2 <> nil then FreeAndNil (f2);
+  if f3 <> nil then FreeAndNil (f3);
+  if f4 <> nil then FreeAndNil (f4);
+  if fonts1 <> nil then FreeAndNil (fonts1);
+  if sdow <> nil then sdow.Free;
+  if sunbmp <> nil then sunbmp.Free;
+  if stretchedsun <> nil then stretchedsun.Free;
+  if fern <> nil then fern.Free;
+  if fernbmp <> nil then fernbmp.Free;
+  if foldbmp <> nil then foldbmp.Free;
+  if foldbmp1 <> nil then foldbmp1.Free;
+  if monthbmp <> nil then monthbmp.Free;
+  if clockbmp <> nil then clockbmp.Free;
+  if longshapebmp <> nil then longshapebmp.Free;
+  for i := 1 to 41 do for j := 0 to 1 do if DayNums[i,j] <> nil then DayNums[i,j].Free;
+  for i := 0 to 8 do if MonNames[i] <> nil then MonNames[i].Free;
+  for i := 0 to 9 do if YearNums[i] <> nil then YearNums[i].Free;
+  for i := 0 to 3 do if FestBmps[i] <> nil then FestBmps[i].Free;
+  for i := 0 to 3 do if arrbmp[i] <> nil then arrbmp[i].Free;
+  for i := 0 to 3 do if sarrbmp[i] <> nil then sarrbmp[i].Free;
+  for i := 0 to 2 do if svitoks[i] <> nil then svitoks[i].Free;
+  for i := 0 to 2 do if ssvitoks[i] <> nil then ssvitoks[i].Free;
   if textbmp <> nil then textbmp.Free;
   if textbmpjammed <> nil then textbmpjammed.Free;
   if textbmpheader <> nil then textbmpheader.Free;
   if textbmpfooter <> nil then textbmpfooter.Free;
   if sfoldbmp <> nil then sfoldbmp.Free;
   if sfoldbmp1 <> nil then sfoldbmp1.Free;
-  DescrList.Free;
-  for i := 1 to 5 do AudioStreams[i].Free;
+  if DescrList <> nil then DescrList.Free;
+  for i := 1 to 5 do if DataPointer^.Tracks[i] <> nil then DataPointer^.Tracks[i].Free;
   inherited;
 end;
 
-procedure TMainForm.FormChangeBounds(Sender: TObject);
+procedure TMainForm.FormChangeBounds (Sender: TObject);
 begin
   if not folding1 then begin
     if Abs (oldsize.cx - MainForm.Width) > Abs (oldsize.cy - MainForm.Height) then begin
@@ -1594,22 +1595,16 @@ begin
        (Round (patstep.x + 0.5), Round (patstep.y + 0.5), rmFineResample));
 end;
 
-procedure TMainForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
-begin
-//  if Tag = 0 then SaveSettings;
-end;
-
 procedure TMainForm.SaveSettings;
 begin
-  OnTop := (MainForm.FormStyle = fsSystemStayOnTop);
   try with XMLConfig1 do begin
     OpenKey ('Location');
-    SetValue ('Place', Location);
-    SetValue ('Latitude', FloatToStrF (Latitude, ffFixed, 4, 2));
-    SetValue ('Longitude', FloatToStrF (Longtitude, ffFixed, 4, 2));
+    SetValue ('Place', UnicodeString (Location));
+    SetValue ('Latitude', UnicodeString (FloatToStrF (Latitude, ffFixed, 4, 2)));
+    SetValue ('Longitude', UnicodeString (FloatToStrF (Longtitude, ffFixed, 4, 2)));
     CloseKey;
     OpenKey ('Time_Zone');
-    SetValue ('GMT', FloatToStrF (T_Zone, ffFixed, 2, 1));
+    SetValue ('GMT', UnicodeString (FloatToStrF (T_Zone, ffFixed, 2, 1)));
     CloseKey;
     OpenKey ('Sound');
     SetValue ('Enabled', EnableSound);
@@ -1619,31 +1614,34 @@ begin
     SetValue ('Compact', folded);
     SetValue ('Pos_X', Left);
     SetValue ('Pos_Y', Top);
-    SetValue ('Scale', FloatToStrF (Scale, ffFixed, 4, 3));
+    SetValue ('Scale', UnicodeString (FloatToStrF (Scale, ffFixed, 4, 3)));
     CloseKey;
     Flush;
   end except
   end;
-  settingschanged := false;
-  MainFormLeft := MainForm.Left;
-  MainFormTop := MainForm.Top;
 end;
 
-procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: boolean);
+procedure TMainForm.FormCloseQuery (Sender: TObject; var CanClose: boolean);
 begin
   SaveSettings;
   Tag := 1;
   if (CloseForm <> nil) and CloseForm.Visible then CanClose := true else begin
      CanClose := false;
-     CloseForm.Tag := 1;
+     //CloseForm.Tag := 1;
      CloseCount := MaxCloseCount;
      AlphaBlend := true;
      AlphaBlendValue := (CloseCount + 1) * 255 div (MaxCloseCount + 2);
      CloseForm.Label2.Caption := IntToStr (CloseCount div 2) + ' сек.';
-     CloseForm.Left := MainForm.Left + (MainForm.Width - CloseForm.Width) div 2 + 10;
-     CloseForm.Top := MainForm.Top + (MainForm.Height - CloseForm.Height) div 2 + 16;
+     if OnTop then begin
+        MainForm.FormStyle := fsStayOnTop;
+        CloseForm.FormStyle := fsSystemStayOnTop;
+     end else begin
+        MainForm.FormStyle := fsNormal;
+        CloseForm.FormStyle := fsNormal;
+     end;
      CloseForm.Show;
-     CloseForm.Left := MainForm.Left + (MainForm.Width - CloseForm.Width) div 2 + 10;
+     CloseForm.BringToFront;
+     CloseForm.Left := MainForm.Left + (MainForm.Width - CloseForm.Width) div 2;
      CloseForm.Top := MainForm.Top + (MainForm.Height - CloseForm.Height) div 2 + 16;
   end;
 end;
@@ -1665,7 +1663,17 @@ var
   shapebmp: TBitmap;
   j: integer;
 begin
-  if not InForm.Visible then InForm.Show;
+  if not InForm.Visible then begin
+     InForm.Show;
+     if OnTop then begin
+        MainForm.FormStyle := fsStayOnTop;
+        InForm.FormStyle := fsSystemStayOnTop;
+     end else begin
+        MainForm.FormStyle := fsNormal;
+        InForm.FormStyle := fsNormal;
+     end;
+     InForm.BringToFront;
+  end;
   if UpTo <> InForm.Height then begin
      shapebmp := TBitmap.Create;
      shapebmp.Monochrome := true;
@@ -1680,14 +1688,14 @@ begin
           longshapebmp.Canvas, Rect (0, SvitokMaxHeight + j - UpTo,
                                longshapebmp.Width, SvitokMaxHeight));
      InForm.SetShape (shapebmp);
-     shapebmp.Free;
+     if shapebmp <> nil then shapebmp.Free;
   end;
 end;
 
 procedure TMainForm.ClickInfo (xCoord, yCoord: integer); // show InForm at x,y
 begin
   STitle := '- ' + KolDar + ' -';
-  Footer := 'сведения о программе';
+  Footer := 'свѣденiя о программѣ';
   Description := About;
   SwitchX := 0;
   FlipToX := 0;
@@ -1742,10 +1750,10 @@ begin
                     (xCoord < (ChrTimeLabel.Left + ChrTimeLabel.Width)) then begin
            SwitchInf (13, 0);
         end else begin
-           STitle := 'Метка Вечера';
+           STitle := 'Мѣтка Вечера';
            Footer := '';
-           Description := 'Установите флажок, если текущее время находится ' +
-                          'в диапазоне от 19:00 до 24:00.';
+           Description := 'Установитѣ флажокъ, если текущѣе время находится ' +
+                          'въ диапазонѣ отъ 18:00 до 24:00.';
         end;
      end;
   end;
@@ -1758,26 +1766,26 @@ var
 
 function Srisett (Sl_Time: boolean): string; // composing Description for Riset
 var
-  SRize1, SSet1, TRise1, TSet1, MRise1, MSet1, MPhase1: single;
+  SRize1, SSet1, TRise1, TSet1, MRise1, MSet1, MPhase1, tz: single;
 begin
-  RiseSet (Latitude, Longtitude, Trunc (JulDay),
-           TimeZoneCalc (Jul_DT_Offset + CurTime),
+  tz := TimeZoneCalc (Jul_DT_Offset + CurTime + Trunc (JulDay - Jul_DT_Offset) - Trunc (CurTime));
+  RiseSet (Latitude, Longtitude, Trunc (JulDay), tz,
            SRize1, SSet1, TRise1, TSet1, MRise1, MSet1, MPhase1);
-  result := 'Местность: ' + Location + '^Широта: ' +
+  result := 'Мѣстность: ' + Location + '^Широта: ' +
                 FloatToStrF (Latitude, ffFixed, 4, 2) + '°^Долгота: ' +
                 FloatToStrF (Longtitude, ffFixed, 4, 2) + '°^Сегодня: ';
   if Sl_Time then result := result + IntToStr (SlvDay) + ' ' +
      MonthsSlv[SlvMonth] + ', Лѣта ' + IntToStr (SlvYear) + '-го'
   else result := result + ChrDayBox.Text + ' ' +
      ChrMonBox.Items[ChrMonBox.ItemIndex] + ' ' + ChrYearBox.Text + ' г.';
-  result := result + ' ^Часовой пояс: ' + FloatToStrF (T_Zone, ffFixed, 3, 1) +
-             '^^^                     ';
+  result := result + ' ^Часовой поясъ: ' + FloatToStrF (7 - tz, ffFixed, 3, 1) +
+             '^^^                   ';
   if Sl_Time then result := result + '  ';
-  result := result + 'восход - закат ^# Ярило-Солнце: ' +
+  result := result + 'восходъ - закатъ ^# Ярило-Солнце: ' +
     FormTime (SRize1, SSet1, 1, Sl_Time) + '^$      Сумерки: ' +
-    FormTime (TRise1, TSet1, 2, Sl_Time) + '^%  Месяц-Луна: ' +
-    FormTime (MRise1, MSet1, 0, Sl_Time) + '^ Возраст Луны: ' +
-    FloatToStrF (MPhase1, ffFixed, 3, 1) + ' суток';
+    FormTime (TRise1, TSet1, 2, Sl_Time) + '^%  Месяцъ-Луна: ' +
+    FormTime (MRise1, MSet1, 0, Sl_Time) + '^ Возрастъ Луны: ' +
+    FloatToStrF (MPhase1, ffFixed, 3, 1) + ' сутокъ';
 end;
 
 procedure DescDay (CDay, CMonth, CYear: integer); // Description for a Day
@@ -1812,10 +1820,10 @@ begin
      (CMonth >= Low (AllDays[1])) and (CMonth <= High (AllDays[1])) then begin
      Footer := AllDays[CDay,CMonth].FestName;
      case AllDays[CDay,CMonth].FestType of
-       'Д': Description := 'Родительский День^';
-       'Н': Description := 'Неделя Памяти Праотцев^';
-       'П': Description := 'День Памяти и Почитания Предков^';
-       'Р': Description := 'Русалии^';
+       'Д': Description := 'Родительский Дѣнь^';
+       'Н': Description := 'Недѣля Памяти Праотцевъ^';
+       'П': Description := 'Дѣнь Памяти и Почитанiя Прѣдковъ^';
+       'Р': Description := 'Русалiи^';
        otherwise Description := '';
      end;
      if (AllDays[CDay,CMonth].Post >= Low (AllPosts)) and
@@ -1862,9 +1870,9 @@ begin
          n := (Trunc (SlvTime) + SwitchX + 15999) mod SlvHrsDay; // время засхода
          STitle := AllHours[n] + ' (' + IntToStr (n + 1) + ' час';
          case n of
-           0: ;
+           0: STitle := STitle + 'ъ';
            1, 2, 3: STitle := STitle + 'а';
-           otherwise STitle := STitle + 'ов';
+           otherwise STitle := STitle + 'овъ';
          end;
          STitle := STitle + ')';
          Footer := AllHours1[n];
@@ -1938,11 +1946,11 @@ begin
           n := Trunc (JulDay + SwitchX) mod 7;
           STitle := DowsChr[n];
           Footer := '';
-          if (n = 5) or (n = 6) then Description := 'Выходной день'
-             else Description := 'Рабочий день';
+          if (n = 5) or (n = 6) then Description := 'Выходной дѣнь'
+             else Description := 'Рабочiй дѣнь';
         end;
     13: begin
-          STitle := 'Сейчас ' + FormatDateTime ('h' + ':' + 'nn', CurTime);
+          STitle := 'Сѣйчасъ ' + FormatDateTime ('h' + ':' + 'nn', CurTime);
           Footer := 'по гражданскому времени';
           Description := Srisett (false);
         end;
@@ -1955,7 +1963,7 @@ var
   tempstr, tempstr2: string;
   b: TBGRABitmap;
   drawer: TBGRAFreeTypeDrawer;
-  fx: TBGRATextEffect;
+  fx: TBGRACustomTextEffect;
 begin
   if f1 <> nil then with f1 do begin    // set font properties
     SizeInPixels := Round (18 * Scale);
@@ -1985,7 +1993,7 @@ begin
     if (i < Utf8Length (Description)) and
        (f2.TextWidth (tempstr) < ((dy + dy) div 3)) then begin
        x1 := Utf8pos ('-', Description, i);
-       if x1 > 0 then tempstr2 := tempstr + Utf8copy (Description, i, x1 - i + 1);
+       if x1 > 0 then tempstr2 := tempstr + Utf8copy (Description, i + 1, x1 - i);
        if f2.TextWidth (tempstr2) <= dy then begin
           tempstr := tempstr2;
           i := x1;
@@ -2011,17 +2019,17 @@ begin
   drawer := TBGRAFreeTypeDrawer.Create (b);
   fx := drawer.CreateTextEffect (STitle, f1);
   fx.DrawShadow (b, 2, 2, 3, BGRABlack);
-  fx.Draw (b, 0, 0, ColorToBGRA (clBlue));
-  fx.Free;
-  drawer.Free;
+  fx.Draw (b, 0, 0, ColorToBGRA (clAqua));
+  if fx <> nil then fx.Free;
+  if drawer <> nil then drawer.Free;
   if textbmpheader = nil then textbmpheader := b else BGRAReplace (textbmpheader, b);
   b := TBGRABitmap.Create (InForm.Width, ssvitoks[0].Height, BGRAPixelTransparent);
   drawer := TBGRAFreeTypeDrawer.Create (b);
   fx := drawer.CreateTextEffect (Footer, f1);
   fx.DrawShadow (b, 2, 2, 3, BGRABlack);
-  fx.Draw (b, 0, 0, ColorToBGRA (clBlue));
-  fx.Free;
-  drawer.Free;
+  fx.Draw (b, 0, 0, ColorToBGRA (clAqua));
+  if fx <> nil then fx.Free;
+  if drawer <> nil then drawer.Free;
   if textbmpfooter = nil then textbmpfooter := b else BGRAReplace (textbmpfooter, b);
   b := TBGRABitmap.Create (InForm.Width - Round (SvitokTextDiff * Scale),
        Round ((DescrList.Count * StringStep + 12) * Scale), BGRAPixelTransparent);
@@ -2032,7 +2040,7 @@ begin
                     [ftaJustify, ftaTop]);
     y1 := y1 + Round (StringStep * Scale);
   end;
-  drawer.Free;
+  if drawer <> nil then drawer.Free;
   if textbmp = nil then textbmp := b else BGRAReplace (textbmp, b);
   StartString := 0;                         // вычисление "кучки мусора"
   b := textbmp.Resample (textbmp.Width, (textbmp.Height div
@@ -2070,7 +2078,7 @@ var
   i, x1, y1, dy: integer;
   p: PBGRAPixel;
 begin
-  InForm.Free;  // для обхода глюка с пропаданием формы после нескольких вызовов
+  if InForm <> nil then InForm.Free;  // для обхода глюка с пропаданием формы после нескольких вызовов
   InForm := TInForm.Create (MainForm);
   InForm.Height := SvitokMinHeight;
   InForm.Width := ssvitoks[0].Width;
@@ -2110,7 +2118,7 @@ begin
   poppingstage := 0;
   PopTick := 0;
   InForm.Height := SvitokMinHeight + 1;
-  if EnableSound then PlaySound (1, 0);          // звучит шелест, без повтора
+  if EnableSound then PlaySound (1, 0, false);          // звучит шелест, без повтора
   ShapeSvitok (SvitokMinHeight);
   Timer_10Hz.Enabled := true;
 end;
@@ -2352,12 +2360,11 @@ begin
   sinh0[0] := sin (rad * (    8.0 / 60.0 ));  // Moonrise             at h= +8'
   sinh0[1] := sin (rad * ( - 50.0 / 60.0 ));  // Sunrise              at h=-50'
   sinh0[2] := sin (rad * (        - 12.0 ));  // Nautical twilight    at h=-12deg
-//  sinh0[3] := sin (rad * (        -  6.0 ));  // Civil twilight       at h=-6 deg
-//  sinh0[4] := sin (rad * (        - 18.0 )); // Astronomical twilight at h=-18deg
+//  sinh0[2] := sin (rad * (        -  6.0 ));  // Civil twilight       at h=-6 deg
+//  sinh0[2] := sin (rad * (        - 18.0 )); // Astronomical twilight at h=-18deg
   latitud := latitud * rad;
   longitud := longitud * rad;
-  timezone := timezone / ChrHrsDay;
-  rs_date := Trunc (rs_date) - timezone;
+  rs_date := Trunc (rs_date) - (7 - timezone) / ChrHrsDay;
   Cphi := cos (latitud);
   Sphi := sin (latitud);
   for e := 0 to 2 do begin  // 0=moon, 1=sun, 2=twilight
@@ -2449,7 +2456,7 @@ begin
   end;  {for}
 end;
 
-procedure TMainForm.ChrMonBoxUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
+procedure TMainForm.ChrMonBoxUTF8KeyPress (Sender: TObject; var UTF8Key: TUTF8Char);
 begin
   case UTF8Key of
     '1', 'Я', 'я', 'Z', 'z':  TComboBox (Sender).ItemIndex := 0; // Январь
@@ -2468,7 +2475,7 @@ begin
   UTF8Key := #0;
 end;
 
-procedure TMainForm.ChrYearBoxChange(Sender: TObject);
+procedure TMainForm.ChrYearBoxChange (Sender: TObject);
 begin
   if not BlockChangeEvent then begin
      if (StrToIntDef (ChrYearBox.Text, 1) = 1918) and (ChrMonBox.ItemIndex = 1)
@@ -2477,11 +2484,12 @@ begin
     if not JustStarted then begin
        JulDay := Chr2JD;
        JD2Form (JulDay, true, false, true);
+       JustChanged := true;
     end;
   end;
 end;
 
-procedure TMainForm.ChrYearBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TMainForm.ChrYearBoxKeyDown (Sender: TObject; var Key: Word; Shift: TShiftState);
 var
   n: integer;
 begin
@@ -2516,7 +2524,7 @@ begin
   end;
 end;
 
-procedure TMainForm.ChrYearBoxKeyUp(Sender: TObject; var Key: Word;
+procedure TMainForm.ChrYearBoxKeyUp (Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   case Key of
@@ -2531,7 +2539,7 @@ begin
   end;
 end;
 
-procedure TMainForm.ChrDayBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TMainForm.ChrDayBoxKeyDown (Sender: TObject; var Key: Word; Shift: TShiftState);
 var
   n: integer;
 begin
@@ -2552,7 +2560,7 @@ begin
   end;
 end;
 
-procedure TMainForm.ChrDayBoxKeyUp(Sender: TObject; var Key: Word;
+procedure TMainForm.ChrDayBoxKeyUp (Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   KeyPressed := false;
@@ -2562,7 +2570,7 @@ begin
   end;
 end;
 
-procedure TMainForm.ChrDayBoxChange(Sender: TObject);
+procedure TMainForm.ChrDayBoxChange (Sender: TObject);
 var
   q: integer;                   // количество дней в Хр. месяце
   t: integer;
@@ -2581,38 +2589,48 @@ begin
     if not (JustStarted or KeyPressed) then begin
        JulDay := Chr2JD;
        JD2Form (JulDay, true, false, true);
+       JustChanged := true;
     end;
     PressedDay := 0;
   end;
 end;
 
-procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word;
+procedure TMainForm.FormKeyDown (Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if (CloseForm <> nil ) and CloseForm.Visible then begin
-     CloseForm.Tag := 0;
+     //CloseForm.Tag := 0;
+     if OnTop then begin
+        MainForm.FormStyle := fsSystemStayOnTop;
+        CloseForm.FormStyle := fsStayOnTop;
+     end;
      CloseForm.Close;
   end;
-if Shift = [ssCtrl] then begin
-     if folded and (Key = VK_RIGHT) then begin
+  if Shift = [ssCtrl] then begin
+     if folded and ((Key = VK_LEFT) or (Key = VK_RIGHT)) then begin
         MainForm.Constraints.MaxWidth := unfoldedsize * 2;
         folding := true;                   // starting form fold/unfold process
         folding1 := true;
-        if EnableSound then PlaySound (4, 0); // звучит выдвигание ящика, без повтора
+        folding_left := (Key = VK_LEFT);   // раскладывание справа налево
+        End_Left := Left;
+//        if folding_left then End_Left := End_Left - unfoldedsize + foldedsize;
+        if EnableSound then PlaySound (4, 0, folding_left); // звучит выдвигание ящика, без повтора
      end;
-     if (not folded) and (Key = VK_LEFT) then begin
+     if (not folded) and ((Key = VK_LEFT) or (Key = VK_RIGHT)) then begin
         MainForm.Constraints.MinWidth := foldedsize;
         folding := true;                   // starting form fold/unfold process
         folding1 := true;
         DisEnAbleControls (false);
-        if EnableSound then PlaySound (3, 0); // звучит задвигание ящика, без повтора
+        folding_left := (Key = VK_RIGHT);   // складывание слева направо
+        End_Left := Left;
+//        if folding_left then End_Left := End_Left + unfoldedsize - foldedsize;
+        if EnableSound then PlaySound (3, 0, folding_left); // звучит задвигание ящика, без повтора
      end;
      if Key = VK_S then begin              // go to today (нЫнче)
         SlvTimeButton.Click;
      end;
      if Key = VK_P then begin              // toggle sound (Звук)
         EnableSound := not EnableSound;
-        settingschanged := true;
         if EnableSound then OpenSound else begin
            if Stream <> nil then Pa_CloseStream (Stream);
            Stream := nil;
@@ -2621,7 +2639,6 @@ if Shift = [ssCtrl] then begin
      end;
      if Key = VK_G then begin              // toggle ontop (Поверх)
         OnTop := not OnTop;
-        settingschanged := true;
         if OnTop then MainForm.FormStyle := fsSystemStayOnTop
            else MainForm.FormStyle := fsNormal;
      end;
@@ -2629,7 +2646,7 @@ if Shift = [ssCtrl] then begin
   end;
 end;
 
-procedure TMainForm.FormMouseDown(Sender: TObject; Button: TMouseButton;
+procedure TMainForm.FormMouseDown (Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   x1, y1, i: integer;
@@ -2645,19 +2662,21 @@ begin
   OriPosition.y := y1;
   if (Button = mbLeft) and (Sender <> VecherMark) then begin
      LongPressed := LongPressedTime;
-     if x1 > (MainForm.Width - foldbmp.Width) then begin
+     if (x1 > (MainForm.Width - foldbmp.Width)) or (x1 < foldbmp.Width) then begin
         if WindowState = wsNormal then begin
            gesture := false;
            folding := true;                   // (un)folding click
            folding1 := true;
+           folding_left := (x1 < foldbmp.Width);
            if folded then begin
               MainForm.Constraints.MaxWidth := unfoldedsize * 2;
-              if EnableSound then PlaySound (4, 0); // звучит выдвигание ящика, без повтора
+              if EnableSound then PlaySound (4, 0, folding_left); // звучит выдвигание ящика, без повтора
            end else begin
               MainForm.Constraints.MinWidth := foldedsize;
               DisEnAbleControls (false);
-              if EnableSound then PlaySound (3, 0); // звучит задвигание ящика, без повтора
+              if EnableSound then PlaySound (3, 0, folding_left); // звучит задвигание ящика, без повтора
            end;
+           End_Left := Left;
            Timer_10Hz.Enabled := true;
         end;
      end else begin
@@ -2779,7 +2798,7 @@ begin
      end;
 end;
 
-procedure TMainForm.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
+procedure TMainForm.FormMouseMove (Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 var
   x1, y1: integer;
@@ -2806,7 +2825,7 @@ begin
   end;
 end;
 
-procedure TMainForm.FormMouseUp(Sender: TObject; Button: TMouseButton;
+procedure TMainForm.FormMouseUp (Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   x1, y1, i: integer;
@@ -2823,19 +2842,19 @@ begin
      if gesture then begin
         gesture := false;
         if (Abs (startgesture.y - y1) <= gesturetreshold) and
-           (Abs (startgesture.x - x1) > (MainForm.Width div 3)) and
-           ((folded and (startgesture.x < x1)) or ((startgesture.x > x1) and not folded))
-               then begin
+           (Abs (startgesture.x - x1) > (MainForm.Width div 3)) then begin
            folding := true;                   // starting form fold/unfold process
            folding1 := true;
+           folding_left := ((folded and (startgesture.x > x1)) or ((startgesture.x < x1) and not folded));
            if folded then begin
               MainForm.Constraints.MaxWidth := unfoldedsize * 2;
-              if EnableSound then PlaySound (4, 0); // звучит выдвигание ящика, без повтора
+              if EnableSound then PlaySound (4, 0, folding_left); // звучит выдвигание ящика, без повтора
            end else begin
               MainForm.Constraints.MinWidth := foldedsize;
               DisEnAbleControls (false);
-              if EnableSound then PlaySound (3, 0); // звучит задвигание ящика, без повтора
+              if EnableSound then PlaySound (3, 0, folding_left); // звучит задвигание ящика, без повтора
            end;
+           End_Left := Left;
            Timer_10Hz.Enabled := true;
         end;
      end;
@@ -2894,14 +2913,13 @@ begin
   rolling := false;
 end;
 
-procedure TMainForm.FormResize(Sender: TObject);
+procedure TMainForm.FormResize (Sender: TObject);
 var
   i: integer;
   k: single;
 begin
   if not folding then begin
     Scale := MainForm.Height / defaultsize.Y;
-    settingschanged := true;
     patstep.x := MainForm.Width / PatternImage.X;
     patstep.y := MainForm.Height / PatternImage.Y;
     pattern.X := Round (patstep.x + 0.3);
@@ -2988,6 +3006,8 @@ begin
     SorHei := SorokovnikImage.Height;
     k := Scale / 2;
     SvitokMinHeight := 0;
+    BGRAReplace (mute, mutebmp.Resample (Round (mutebmp.Width * k),
+          Round (mutebmp.Height * k), rmFineResample));
     for i := 0 to 2 do begin
       BGRAReplace (ssvitoks[i], svitoks[i].Resample (Round (svitoks[i].Width * k),
             Round (svitoks[i].Height * k), rmFineResample));
@@ -3012,7 +3032,7 @@ begin
   Invalidate;
 end;
 
-procedure TMainForm.SlvDayBoxChange(Sender: TObject);
+procedure TMainForm.SlvDayBoxChange (Sender: TObject);
 var
   q: integer;                   // количество дней в Славянском месяце
 begin
@@ -3027,7 +3047,7 @@ begin
   end;
 end;
 
-procedure TMainForm.SlvDayBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TMainForm.SlvDayBoxKeyDown (Sender: TObject; var Key: Word; Shift: TShiftState);
 var
   n: integer;
 begin
@@ -3051,7 +3071,7 @@ begin
   end;
 end;
 
-procedure TMainForm.SlvDayBoxKeyUp(Sender: TObject; var Key: Word;
+procedure TMainForm.SlvDayBoxKeyUp (Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   KeyPressed := false;
@@ -3061,7 +3081,7 @@ begin
   end;
 end;
 
-procedure TMainForm.SlvDayBoxUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
+procedure TMainForm.SlvDayBoxUTF8KeyPress (Sender: TObject; var UTF8Key: TUTF8Char);
 begin
   case UTF8Key of
     '-', '0'..'9', #3, #8, #22, #24, #26: begin
@@ -3075,7 +3095,7 @@ begin
 
 end;
 
-procedure TMainForm.SlvMonBoxUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
+procedure TMainForm.SlvMonBoxUTF8KeyPress (Sender: TObject; var UTF8Key: TUTF8Char);
 begin
   case UTF8Key of
     '1', 'Р', 'р', 'H', 'h':  TComboBox (Sender).ItemIndex := 0; // Рамхатъ
@@ -3091,7 +3111,7 @@ begin
   UTF8Key := #0;
 end;
 
-procedure TMainForm.SlvTimeButtonClick(Sender: TObject);
+procedure TMainForm.SlvTimeButtonClick (Sender: TObject);
 begin
   CalPosition.x := 0;
   CalPosition.y := 0;
@@ -3104,7 +3124,7 @@ begin
   Invalidate;
 end;
 
-procedure TMainForm.SlvYearBoxChange(Sender: TObject);
+procedure TMainForm.SlvYearBoxChange (Sender: TObject);
 begin
   if not BlockChangeEvent then begin
     if not JustStarted then begin
@@ -3150,7 +3170,7 @@ begin
   end;
 end;
 
-procedure TMainForm.SlvYearBoxKeyUp(Sender: TObject; var Key: Word;
+procedure TMainForm.SlvYearBoxKeyUp (Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   case Key of
@@ -3165,11 +3185,11 @@ begin
   end;
 end;
 
-procedure TMainForm.Timer_100HzTimer(Sender: TObject);
+procedure TMainForm.Timer_100HzTimer (Sender: TObject);
 begin
-  if CurSample >= SampleQty then begin
+  if DataPointer^.CurSample >= DataPointer^.SampleQty then begin
      Pa_StopStream (Stream);
-     CurSample := 0;
+     DataPointer^.CurSample := 0;
   end;
   Timer_100Hz.Enabled := false;
 end;
@@ -3182,7 +3202,7 @@ const
   t3 = 'ВI^';  // 12 часов
 var
   dr: TBGRAFreeTypeDrawer;
-  fx: TBGRATextEffect;
+  fx: TBGRACustomTextEffect;
   i, x, y: integer;
   a, h, m, sc: single;
   cl, co: TBGRAPixel;
@@ -3207,29 +3227,35 @@ begin
   co := ColorToBGRA (clWhite);   // color of outline
   fx := dr.CreateTextEffect (t0, f3);
   x := Round (cb.Width - f3.TextWidth (t0)) div 2 + 1;
-  y := cb.Height - Round (f3.TextHeight (t0) * 4 / 5);
+  if ClockWise then
+     y := cb.Height - Round (f3.TextHeight (t0) * 4 / 5)
+  else
+     y := 4;
   fx.DrawOutline (cb, x, y, co);
   fx.Draw (cb, x, y, cl);
-  fx.Free;
+  if fx <> nil then fx.Free;
   fx := dr.CreateTextEffect (t1, f3);
   x := 5;
   y := Round (cb.Height - f3.TextHeight (t1)) div 2 + 3;
   fx.DrawOutline (cb, x, y, co);
   fx.Draw (cb, x, y, cl);
-  fx.Free;
+  if fx <> nil then fx.Free;
   fx := dr.CreateTextEffect (t2, f3);
   x := Round (cb.Width - f3.TextWidth (t2)) div 2 + 3;
-  y := 4;
+  if ClockWise then
+     y := 4
+  else
+     y := cb.Height - Round (f3.TextHeight (t2) * 4 / 5) + 2;
   fx.DrawOutline (cb, x, y, co);
   fx.Draw (cb, x, y, cl);
-  fx.Free;
+  if fx <> nil then fx.Free;
   fx := dr.CreateTextEffect (t3, f3);
   x := cb.Width - Round (f3.TextWidth (t3)) - 3;
   y := Round (cb.Height - f3.TextHeight (t3)) div 2 + 3;
   fx.DrawOutline (cb, x, y, co);
   fx.Draw (cb, x, y, cl);
-  fx.Free;
-  dr.Free;
+  if fx <> nil then fx.Free;
+  if dr <> nil then dr.Free;
   cl := ColorToBGRA (clBlack);  // color of Earth sign
   cb.LineCap := pecSquare;
   a := cb.Width div 100;
@@ -3266,15 +3292,21 @@ begin
   cls[1] := BGRA (255, 127, 0, 63);  // color of minutes
   cls[2] := BGRA (255, 0, 0, 63);    // color of seconds
   crs[0,0].x := sin (h) * x * 0.4;
-  crs[0,0].y := cos (h) * y * 0.4;
+  crs[1,0].x := sin (m) * x * 0.6;
+  crs[2,0].x := sin (a) * x * 0.8;
+  if ClockWise then begin
+     crs[0,0].y := cos (h) * y * 0.4;
+     crs[1,0].y := cos (m) * y * 0.6;
+     crs[2,0].y := cos (a) * y * 0.8;
+  end else begin
+     crs[0,0].y := -cos (h) * y * 0.4;
+     crs[1,0].y := -cos (m) * y * 0.6;
+     crs[2,0].y := -cos (a) * y * 0.8;
+  end;
   crs[0,1].x := crs[0,0].x * 0.33;
   crs[0,1].y := crs[0,0].y * 0.33;
-  crs[1,0].x := sin (m) * x * 0.6;
-  crs[1,0].y := cos (m) * y * 0.6;
   crs[1,1].x := crs[1,0].x * 0.75;
   crs[1,1].y := crs[1,0].y * 0.75;
-  crs[2,0].x := sin (a) * x * 0.8;
-  crs[2,0].y := cos (a) * y * 0.8;
   crs[2,1].x := crs[2,0].x * 0.82;
   crs[2,1].y := crs[2,0].y * 0.82;
   cb.LineCap := pecSquare; // pecRound ?
@@ -3291,7 +3323,7 @@ begin
      except
 //        ShowMessage ('PutImage #7');
      end;
-  tb.Free;
+  if tb <> nil then tb.Free;
   for i := 0 to 2 do begin
     cb.DrawLineAntialias (
        x - Round (crs[i,0].x), y + Round (crs[i,0].y),
@@ -3310,7 +3342,7 @@ begin
   BGRAReplace (clockbmp, cb);
 end;
 
-procedure TMainForm.FormPaint(Sender: TObject);
+procedure TMainForm.FormPaint (Sender: TObject);
 const
   tmrw = 'завтра:';
 var
@@ -3321,7 +3353,7 @@ var
   sx, sy, suniw, soriw, sorih: integer;
   downame: string;
   wcolor: TBGRAPixel;
-  fx: TBGRATextEffect;
+  fx: TBGRACustomTextEffect;
   tmpbmp, tmpbmp1: TBGRABitmap;
 begin
   scl := Scale;
@@ -3331,10 +3363,8 @@ begin
   ox := 0.0;
   oy := ClientHeight - Round (patstep.y);
   for i := 0 to pattern.X - 1 do begin
-    if (fern <> nil) and ((ox + patstep.x) < (ClientWidth + 2)) then begin
-       fern.Draw (Canvas, Round (ox), 0, true);
-       fern.Draw (Canvas, Round (ox), Round (oy), true);
-    end;
+    if fern <> nil then fern.Draw (Canvas, Round (ox), 0, true);
+    if fern <> nil then fern.Draw (Canvas, Round (ox), Round (oy), true);
     ox := ox + patstep.x;
   end;
   ox := ClientWidth - Round (patstep.x);
@@ -3361,7 +3391,7 @@ begin
   fx := drawer.CreateTextEffect (TodayDate, f1);
   fx.DrawOutline (tmpbmp, sx, sy, BGRAWhite);
   fx.Draw (tmpbmp, sx, sy, ColorToBGRA (clNavy));
-  fx.Free;
+  if fx <> nil then fx.Free;
   if f1 <> nil then with f1 do begin    // set font properties
     SizeInPixels := Round (24 * scl);
     Style := [];
@@ -3372,7 +3402,7 @@ begin
   fx := drawer.CreateTextEffect (downame, f1);
   fx.DrawOutline (tmpbmp, sx, sy, BGRAWhite);
   fx.Draw (tmpbmp, sx, sy, wcolor);
-  fx.Free;
+  if fx <> nil then fx.Free;
   if f2 <> nil then with f2 do begin    // set font properties
     Hinted := false;
     SizeInPixels := Round (24 * scl);
@@ -3383,12 +3413,12 @@ begin
   sy := Round (LetoOffset1 * scl);
   fx := drawer.CreateTextEffect (LetoLabelP1, f2);
   fx.Draw (tmpbmp, sx, sy, ColorToBGRA (clMaroon));
-  fx.Free;
+  if fx <> nil then fx.Free;
   sx := Round ((suniw - f2.TextWidth (LetoLabelP)) / 2);
   sy := Round (LetoOffset * scl);
   fx := drawer.CreateTextEffect (LetoLabelP, f2);
   fx.Draw (tmpbmp, sx, sy, ColorToBGRA (clMaroon));
-  fx.Free;
+  if fx <> nil then fx.Free;
   if FestLabel <> '' then begin
      if tomorrow then begin
        if f1 <> nil then with f1 do begin    // set font properties
@@ -3400,7 +3430,7 @@ begin
        sy := Round (42 * scl);
        fx := drawer.CreateTextEffect (tmrw, f1);
        fx.Draw (tmpbmp, sx, sy, ColorToBGRA (clPurple));
-       fx.Free;
+       if fx <> nil then fx.Free;
        if f1 <> nil then with f1 do begin    // set font properties
          SizeInPixels := Round (16 * scl);
          Style := [];
@@ -3426,24 +3456,24 @@ begin
      end;
      fx := drawer.CreateTextEffect (FestLabel, f1);
      fx.Draw (tmpbmp, sx, sy, ColorToBGRA (clPurple));
-     fx.Free;
+     if fx <> nil then fx.Free;
   end;
   sx := Round ((suniw - f2.TextWidth (PalaceLabel)) / 2);
   sy := Round (PalaceOffset * scl);
   fx := drawer.CreateTextEffect (PalaceLabel, f2);
   fx.Draw (tmpbmp, sx, sy, ColorToBGRA (clMaroon));
-  fx.Free;
+  if fx <> nil then fx.Free;
   sx := Round ((suniw - f2.TextWidth (PalaceLabel1)) / 2);
   sy := Round (PalaceOffset1 * scl);
   fx := drawer.CreateTextEffect (PalaceLabel1, f2);
   fx.Draw (tmpbmp, sx, sy, ColorToBGRA (clMaroon));
-  fx.Free;
-  drawer.Free;
+  if fx <> nil then fx.Free;
+  if drawer <> nil then drawer.Free;
   if stretchedsun <> nil then stretchedsun.Draw (Canvas, SunBox.Left,
         Round (Round (Scale_SBT * scl) + Round (Scale_SBH * scl) * (1 - SunPosition)), false);
   if tmpbmp <> nil then
      tmpbmp.Draw (Canvas, Round (Scale_NIL * scl), Round (Scale_NIT * scl), false);
-  tmpbmp.Free;
+  if tmpbmp <> nil then tmpbmp.Free;
   if sdow <> nil then
      sdow.Draw (Canvas, Round (Scale_SIL * scl), Round (Scale_WIT * scl), false);
   if clockbmp <> nil then
@@ -3480,11 +3510,17 @@ begin
         tmpbmp1.Free;
      end;
   end;
+  if (not EnableSound) and (mute <> nil) then mute.Draw (Canvas, mute.Width div 2,
+     Canvas.Height - mute.Height - mute.Height div 2, false);
   if (foldbmp_tout > 0) and not folding then begin
      if folded then begin
         if sfoldbmp <> nil then
            sfoldbmp.Draw (Canvas, ClientWidth - sfoldbmp.Width, 0, false);
+        if sfoldbmp1 <> nil then
+           sfoldbmp1.Draw (Canvas, 0, 0, false);
      end else begin
+        if sfoldbmp <> nil then
+           sfoldbmp.Draw (Canvas, 0, 0, false);
         if sfoldbmp1 <> nil then
            sfoldbmp1.Draw (Canvas, ClientWidth - sfoldbmp1.Width, 0, false);
      end;
@@ -3493,7 +3529,7 @@ end;
 
 function TMainForm.TimeZoneCalc (JulianDay: double): double;
 const
-  Moscow_DST: array[0..73] of TZOffset =
+  Moscow_DST: array[0..74] of TZOffset =
     ((StartDay: 2421425; TimeShift: 1.5),  // 02.07.1917
      (StartDay: 2421604; TimeShift: 0.5),  // 28.12.1917
      (StartDay: 2421746; TimeShift: 2.5),  // 01.06.1918
@@ -3567,20 +3603,21 @@ const
      (StartDay: 2455130; TimeShift: 1.0),  // 25.10.2010
      (StartDay: 2455284; TimeShift: 2.0),  // 28.03.2010
      (StartDay: 2455501; TimeShift: 1.0),  // 31.10.2010
-     (StartDay: 2455648; TimeShift: 2.0)); // 27.03.2011
+     (StartDay: 2455648; TimeShift: 2.0),  // 27.03.2011
+     (StartDay: 2456957; TimeShift: 1.0)); // 26.10.2014
 var
   i: integer;
 begin
   JulianDay := Trunc (JulianDay) + 0.5;
   if JulianDay > Moscow_DST[High (Moscow_DST)].StartDay then begin
-    result := Tzseconds div 3600;
+    result := 7 - T_Zone;
   end else if JulianDay < Moscow_DST[Low (Moscow_DST)].StartDay then begin
-    result := Round (Longtitude / 15);
+    result := 7 - Round (Longtitude / 15);
   end else begin
     i := High (Moscow_DST);
     while (i > Low (Moscow_DST)) and (JulianDay < Moscow_DST[i].StartDay) do
       i := i - 1;
-    result := Moscow_DST[i].TimeShift + T_Zone - 2;
+    result := 8 - Moscow_DST[i].TimeShift - T_Zone;
   end;
 end;
 
@@ -3588,12 +3625,12 @@ function TMainForm.TimeConv (ChrTime: double): double;
 var                               // time convertion: Christian to Slavian
   r: double;
 begin
-  r := ChrTime + (TimeZoneCalc (Jul_DT_Offset + ChrTime) - Tzseconds / 3600) / ChrHrsDay;
+  r := ChrTime + Jul_DT_Offset + (TimeZoneCalc (Jul_DT_Offset + ChrTime) - Tzseconds / 3600) / ChrHrsDay;
   r := Frac (r + 7 / 48) * SlvHrsDay + 1;
   result := Trunc (r) + (SlvMinHr * Frac (r)) / 1000;
 end;
 
-procedure TMainForm.Timer_2HzTimer(Sender: TObject);
+procedure TMainForm.Timer_2HzTimer (Sender: TObject);
 var
   ts: string;
   w, s1, s2: single;
@@ -3603,22 +3640,19 @@ begin
   if foldbmp_tout >= 0 then dec (foldbmp_tout);
   if foldbmp_tout = 0 then Invalidate;
   if arrbmp_tout >= 0 then dec (arrbmp_tout);
-  if arrbmp_tout = 0 then InForm.Invalidate;
   CurTime := Now;
-  SlvTime := TimeConv (Jul_DT_Offset + CurTime);
+  SlvTime := TimeConv (CurTime + Trunc (JulDay - Jul_DT_Offset) - Trunc (CurTime));
   Tick1 := not Tick1;
   ts := '`';
   if Tick1 then Tick2 := not Tick2 else ts := '´';
   h := (Trunc (SlvTime) + 15) mod 16;
-  d := Trunc (1000 * Frac (SlvTime) + 0.01);
+  d := Trunc (1000 * Frac (Abs (SlvTime)) + 0.01);
   SlvTimeLabel.Caption := IntToStr (h + 1) + ts + RightStr ('00' + IntToStr (d), 3);
   SlvTimeButton.Caption := SlvTimeLabel.Caption;
-  MainForm.Caption:= IntToStr (SlvDay) + '-e ' + MonthsSlv[SlvMonth] +
-    ' ' + IntToStr (SlvYear) + ', ' + SlvTimeLabel.Caption;
-  Application.Title := MainForm.Caption;
   if Tick2 then ts := ':' else ts := ' ';
   ChrTimeLabel.Caption := FormatDateTime ('h' + ts + 'nn', CurTime);
-  After18Now := Frac (CurTime) > 19 / 24;
+//  After18Now := Frac (CurTime) > 19 / 24;
+  After18Now := (Frac (CurTime) >= 0.5) and (Trunc (SlvTime) mod 16 < 8);
   a := Trunc (JulDay) - CurJulDay;
   if a = 0 then DLabel := ''
   else begin                      // показ разности дней
@@ -3626,7 +3660,7 @@ begin
      if ((b - (b div 100) * 100) div 10) = 1 then b := 5
         else b := b - (b div 10) * 10;
      case b of
-       1: ts := 'ень';
+       1: ts := 'ѣнь';
        2, 3, 4: ts := 'ня';
        otherwise ts := 'ней';
      end;
@@ -3634,52 +3668,92 @@ begin
      if a > 0 then DLabel := '+' + DLabel;
   end;
   CalcClock (SlvTime);
-  Invalidate;
-  Application.ProcessMessages;
-  if (CloseForm <> nil) and CloseForm.Visible then begin
-     CloseForm.Left := MainForm.Left + (MainForm.Width - CloseForm.Width) div 2 + 10;
-     CloseForm.Top := MainForm.Top + (MainForm.Height - CloseForm.Height) div 2 + 16;
-     if CloseCount > 0 then begin
-        CloseForm.Label2.Caption := IntToStr (CloseCount div 2) + ' сек.';
-        Dec (CloseCount);
-        AlphaBlendValue := (CloseCount + 1) * 255 div (MaxCloseCount + 2);
-     end else Close;
-  end else Tag := 0;
+  if MainForm <> nil then begin
+     MainForm.Caption:= IntToStr (SlvDay) + '-e ' + MonthsSlv[SlvMonth] +
+        ' ' + IntToStr (SlvYear) + ', ' + SlvTimeLabel.Caption;
+     Application.Title := MainForm.Caption;
+     if (CloseForm <> nil) and CloseForm.Visible then begin
+        CloseForm.Left := MainForm.Left + (MainForm.Width - CloseForm.Width) div 2;
+        CloseForm.Top := MainForm.Top + (MainForm.Height - CloseForm.Height) div 2 + 16;
+        if CloseCount > 0 then begin
+           CloseForm.Label2.Caption := IntToStr (CloseCount div 2) + ' сек.';
+           Dec (CloseCount);
+           AlphaBlendValue := (CloseCount + 1) * 255 div (MaxCloseCount + 2);
+        end else begin
+          Timer_2Hz.Enabled := false;
+   //       Playing := false;
+          if (Stream <> nil) then begin
+             Pa_CloseStream (Stream);
+             Pa_Terminate();
+          end;
+          MainForm.Close;
+        end;
+     end else Tag := 0;
+     Scale := MainForm.Height / defaultsize.Y;
+     ScaleCorrection := ScaleCorrection and not folding1;
+     if (Scale <> BmpThread.ThrScale) or ScaleCorrection then begin
+        ScaleCorrection := false;
+        CalcNumbers (Scale);
+        if BmpThread.Suspended then BmpThread.Suspended := false;
+     end;
+     //OnTopCount := OnTopCount + 1;
+     //if OnTopCount > 200 then begin       // "костылик" для OnTop
+     //  OnTopCount := 0;
+     //  if OnTop then begin
+     //    MainForm.FormStyle := fsNormal;
+     //    Sleep (100);
+     //    MainForm.FormStyle := fsSystemStayOnTop;
+     //  end;
+     //end;
+     Invalidate;
+     Application.ProcessMessages;
+  end;
   if d = 0 then begin
-     if (Cucked <> h) and EnableSound then PlaySound (2, h); // звучит кукуха, повтор "h" раз
+     if (Cucked <> h) and EnableSound then PlaySound (2, h, false); // звучит кукуха, повтор "h" раз
      Cucked := h;
   end else Cucked := -1;
-  if InForm.Visible then begin
-     PopTick := PopTick + 1;
-     if PopTick > InFormTimeout then begin
-        PopTick := 0;
-        popping := true;
-        Timer_10Hz.Enabled := true;
+  if InForm <> nil then begin
+     if arrbmp_tout = 0 then InForm.Invalidate;
+     if InForm.Visible then begin
+        PopTick := PopTick + 1;
+        if PopTick > InFormTimeout then begin
+           PopTick := 0;
+           popping := true;
+           Timer_10Hz.Enabled := true;
+        end;
      end;
   end;
-  if (After18Now <> After18Old) or JustStarted or (CurCurTime <> Trunc (CurTime)) then begin
-     VecherMark.Checked := After18Now;
+  if Abs (OldCurTime - CurTime) > 0.0001 then SlvTimeButtonClick (Sender);
+  if (After18Now <> After18Old) or JustStarted then begin
      After18Old := After18Now;
-     BlockChangeEvent := true;
-     ChrDayBox.Text := FormatDateTime ('d', CurTime);
-     ChrMonBox.ItemIndex := StrToIntDef (FormatDateTime ('m', CurTime), 1) - 1;
-     JustStarted := false;
-     IsTodayDate := true;
-     BlockChangeEvent := false;
-     ChrYearBox.Text := FormatDateTime ('yyyy', CurTime);
-     ChrYearBox.OnChange (Sender);
-     IsTodayDate := false;
+     if JustStarted or not JustChanged then begin
+        BlockChangeEvent := true;
+        VecherMark.Checked := After18Now;
+        ChrYearBox.Text := FormatDateTime ('yyyy', CurTime);
+        ChrMonBox.ItemIndex := StrToIntDef (FormatDateTime ('m', CurTime), 1) - 1;
+        IsTodayDate := true;
+        BlockChangeEvent := false;
+        JustStarted := false;
+        ChrDayBox.Text := FormatDateTime ('d', CurTime);
+        ChrDayBox.OnChange (Sender);
+        IsTodayDate := false;
+        CurJulDay := Trunc (JulDay);
+     end else
+        VecherMark.Checked := After18Now;
+     JustChanged := false;
      RiseSet (Latitude, Longtitude, Trunc (JulDay),
-              TimeZoneCalc (Jul_DT_Offset + CurTime),
+              TimeZoneCalc (Jul_DT_Offset + CurTime + Trunc (JulDay - Jul_DT_Offset) - Trunc (CurTime)),
               SRize, SSet, TRise, TSet, MRise, MSet, MPhase);
-     CurJulDay := Trunc (JulDay);
-     CurCurTime := Trunc (CurTime);
      CalcBitmap (SorWid, SorHei, false);
   end;
+  JustStarted := false;
+  OldCurTime := CurTime;
+  if JustChanged then
+     RiseSet (Latitude, Longtitude, Trunc (JulDay),
+        TimeZoneCalc (Jul_DT_Offset + CurTime + Trunc (JulDay - Jul_DT_Offset) - Trunc (CurTime)),
+        SRize, SSet, TRise, TSet, MRise, MSet, MPhase);
+  JustChanged := false;
   SunTick := SunTick - 1;
-  if ((SunTick mod 10) = 0) and (settingschanged or
-     (MainFormLeft <> MainForm.Left) or (MainFormTop <> MainForm.Top)) then
-        SaveSettings;
   if SunTick < 0 then begin
      SunTick := SunRefresh;
      if SRize < 0 then s1 := -6 else s1 := SRize;
@@ -3700,7 +3774,7 @@ begin
                                 rmFineResample) as TBGRABitmap;
      BGRAReplace (stretchedsun, bufmap.GetPart (Rect (d, 0, d + SunBox.Width,
                           Round (SunPosition * SunBox.Height) + 1)));
-     bufmap.Free;
+     if bufmap <> nil then bufmap.Free;
      if stretchedsun <> nil then
         BGRAReplace (stretchedsun, stretchedsun.FilterBlurRadial (3, rbFast));
      Invalidate;
@@ -3718,17 +3792,9 @@ begin
         ClickInfo (OriPosition.x, OriPosition.y);
      end;
   end;
-  if Scale <> (MainForm.Height / defaultsize.Y) then settingschanged := true;
-  Scale := MainForm.Height / defaultsize.Y;
-  ScaleCorrection := ScaleCorrection and not folding1;
-  if (Scale <> BmpThread.ThrScale) or ScaleCorrection then begin
-     ScaleCorrection := false;
-     CalcNumbers (Scale);
-     if BmpThread.Suspended then BmpThread.Suspended := false;
-  end;
 end;
 
-procedure TMainForm.Timer_10HzTimer(Sender: TObject);
+procedure TMainForm.Timer_10HzTimer (Sender: TObject);
 var
   k: single;
   j, px, py: integer;
@@ -3737,7 +3803,7 @@ begin
      Timer_10Hz.Enabled := false;
      Timer_10Hz.Interval := 50;
   end;
-  if folding1 then begin
+  if folding1 and (MainForm <> nil) then begin
      if WindowState <> wsNormal then begin
        folding := false;
        folding1 := false;
@@ -3745,41 +3811,43 @@ begin
      end;
      k := MainForm.Height / defaultsize.Y;
      if folding then begin
+       j := Round (k * foldingstep);
        if folded then begin
-         Width := Width + Round (k * foldingstep);
+         if folding_left then Left := Left - j;
+         Width := Width + j;
          if Width >= k * unfoldedsize then begin
             folding := false;         // end of unfolding
             folded := false;
-            settingschanged := true;
             DisEnAbleControls (true);
             SlvTimeLabel.Visible := false;
             SlvTimeButton.Visible := true;
             foldbmp_tout := 0;
             Constraints.MinWidth := unfoldedsize;
+            Constraints.MaxWidth := unfoldedsize * 2;
             MainForm.Width := round (k * unfoldedsize);
+            if folding_left then
+               MainForm.Left := End_Left - round (k * (unfoldedsize - foldedsize));
          end;
        end else begin
-         Width := Width - Round (k * foldingstep);
+         Width := Width - j;
+         if folding_left then Left := Left + j;
          if Width <= k * foldedsize then begin
             folding := false;         // end of folding
             folded := true;
-            settingschanged := true;
             SlvTimeLabel.Visible := true;
             SlvTimeButton.Visible := false;
             foldbmp_tout := 0;
             Constraints.MaxWidth := foldedsize * 2;
+            Constraints.MinWidth := foldedsize;
             MainForm.Width := round (k * foldedsize);
+            if folding_left then
+               MainForm.Left := End_Left + round (k * (unfoldedsize - foldedsize));
          end;
-       end;
-       pattern.X := Round (MainForm.Width / PatternImage.X + 0.3) + 1;
-       if not folding then begin                 // fern image correction
-         pattern.X := pattern.X - 1;
-         patstep.x := MainForm.Width / pattern.X;
-         BGRAReplace (fern, fernbmp.Resample
-              (Round (patstep.x + 0.5), Round (patstep.y + 0.5), rmFineResample));
        end;
      end else begin
        folding1 := false;  // off ?
+       FormResize (Sender);
+       FormChangeBounds (Sender);
      end;
   end;
   if rolling then begin    // calculating speed of calendar
@@ -3793,11 +3861,11 @@ begin
   if ((CalSpeed.x <> 0) or (CalSpeed.y <> 0) or AttractionX or AttractionY)
         and not rolling then begin
      RollTime := RollTime + 1;
-     if EnableSound and ((Abs (CalSpeed.x) >= (DesiredSpeed.x div 2)) or
-        (Abs (CalSpeed.y) >= (DesiredSpeed.y div 2)))
-         and not ((Pa_IsStreamActive (Stream) = CInt32 (paComplete)) or
-         AttractionX or AttractionY) then
-            PlaySound (5, 0);                    // звучит прялка, без повтора
+     if EnableSound and ((Abs (CalSpeed.x) > (DesiredSpeed.x div 2)) or
+        (Abs (CalSpeed.y) > (DesiredSpeed.y div 2)))
+         and not ((Pa_IsStreamActive (Stream) = CInt32 (paComplete)){ or
+         AttractionX or AttractionY}) then
+            PlaySound (5, 0, false);                    // звучит прялка, без повтора
      if not AttractionX then begin
         k := RollTime / MaxRollTime.x;
         if k > 1 then k := 1;
@@ -3856,10 +3924,11 @@ begin
         BmpThread.shifty := 0; // off ?
         AttractionX := false;
         AttractionY := false;
+        JustChanged := true;
      end;
      Invalidate;
   end;
-  if popping then begin
+  if popping and (InForm <> nil) then begin
      case poppingstage of
        0: if InForm.Height < Min ((SvitokHeight + TitleHeight * Scale), SvitokMaxHeight) then begin
              j := InForm.Height + Round (Foldingstep * Scale);
@@ -3905,8 +3974,8 @@ begin
      InfPrePos.x := InfJogPos.x;
      InfPrePos.y := InfJogPos.y;
   end;                     // moving text with inertion \/
-  if ((InfSpeed.x <> 0) or (InfSpeed.y <> 0) or InfAttrX or InfAttrY or
-        (FlipToX <> 0)) and not scrolling then begin
+  if (InForm <> nil) and ((InfSpeed.x <> 0) or (InfSpeed.y <> 0) or
+        InfAttrX or InfAttrY or (FlipToX <> 0)) and not scrolling then begin
      ScrollTime := ScrollTime + 1;
      if (FlipToX = 0) and not InfAttrX then begin
         k := ScrollTime / MaxRollTime.x;

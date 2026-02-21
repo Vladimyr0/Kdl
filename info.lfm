@@ -1,7 +1,7 @@
 object InForm: TInForm
-  Left = 865
+  Left = 707
   Height = 268
-  Top = 262
+  Top = 166
   Width = 360
   BorderIcons = []
   BorderStyle = bsNone
@@ -10,6 +10,9 @@ object InForm: TInForm
   DefaultMonitor = dmMainForm
   FormStyle = fsStayOnTop
   KeyPreview = True
+  ShowInTaskBar = stNever
+  LCLVersion = '4.4.0.0'
+  OnClose = FormClose
   OnDeactivate = FormDeactivate
   OnKeyDown = FormKeyDown
   OnMouseDown = FormMouseDown
@@ -17,6 +20,4 @@ object InForm: TInForm
   OnMouseUp = FormMouseUp
   OnPaint = FormPaint
   OnShow = FormShow
-  ShowInTaskBar = stNever
-  LCLVersion = '1.0.4.0'
 end

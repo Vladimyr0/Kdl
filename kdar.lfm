@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 391
+  Left = 517
   Height = 336
-  Top = 171
+  Top = 991
   Width = 432
   Caption = 'Колядинъ Даръ'
   ClientHeight = 336
@@ -12,8 +12,9 @@ object MainForm: TMainForm
   Constraints.MinHeight = 336
   Constraints.MinWidth = 432
   KeyPreview = True
+  ShowHint = True
+  LCLVersion = '4.4.0.0'
   OnChangeBounds = FormChangeBounds
-  OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -23,17 +24,15 @@ object MainForm: TMainForm
   OnMouseUp = FormMouseUp
   OnPaint = FormPaint
   OnResize = FormResize
-  ShowHint = True
-  LCLVersion = '1.0.4.0'
   object SunImage: TImage
     Left = 4
     Height = 156
     Top = 16
     Width = 152
-    OnMouseUp = FormMouseUp
     Stretch = True
     Transparent = True
     Visible = False
+    OnMouseUp = FormMouseUp
   end
   object SlvDayBox: TComboBox
     Left = 160
@@ -48,15 +47,15 @@ object MainForm: TMainForm
     Font.Name = 'Serif'
     ItemHeight = 0
     MaxLength = 2
+    ParentFont = False
+    TabOrder = 0
+    Text = 'g1'
     OnChange = SlvDayBoxChange
     OnKeyDown = SlvDayBoxKeyDown
     OnKeyUp = SlvDayBoxKeyUp
     OnMouseDown = FormMouseDown
     OnMouseUp = FormMouseUp
     OnUTF8KeyPress = SlvDayBoxUTF8KeyPress
-    ParentFont = False
-    TabOrder = 0
-    Text = 'g1'
   end
   object SlvMonBox: TComboBox
     Left = 224
@@ -70,13 +69,13 @@ object MainForm: TMainForm
     Font.Height = -13
     Font.Name = 'Serif'
     ItemHeight = 0
+    ParentFont = False
+    Style = csDropDownList
+    TabOrder = 1
     OnChange = SlvDayBoxChange
     OnMouseDown = FormMouseDown
     OnMouseUp = FormMouseUp
     OnUTF8KeyPress = SlvMonBoxUTF8KeyPress
-    ParentFont = False
-    Style = csDropDownList
-    TabOrder = 1
   end
   object SlvYearBox: TComboBox
     Left = 340
@@ -91,6 +90,9 @@ object MainForm: TMainForm
     Font.Name = 'Serif'
     ItemHeight = 0
     MaxLength = 5
+    ParentFont = False
+    TabOrder = 2
+    Text = '7520'
     OnChange = SlvDayBoxChange
     OnExit = SlvDayBoxChange
     OnKeyDown = SlvYearBoxKeyDown
@@ -98,9 +100,6 @@ object MainForm: TMainForm
     OnMouseDown = FormMouseDown
     OnMouseUp = FormMouseUp
     OnUTF8KeyPress = SlvDayBoxUTF8KeyPress
-    ParentFont = False
-    TabOrder = 2
-    Text = '7520'
   end
   object ChrDayBox: TComboBox
     Left = 160
@@ -115,14 +114,14 @@ object MainForm: TMainForm
     Font.Name = 'Serif'
     ItemHeight = 0
     MaxLength = 2
+    ParentFont = False
+    TabOrder = 3
+    Text = '1'
     OnChange = ChrDayBoxChange
     OnKeyDown = ChrDayBoxKeyDown
     OnKeyUp = ChrDayBoxKeyUp
     OnMouseUp = FormMouseUp
     OnUTF8KeyPress = SlvDayBoxUTF8KeyPress
-    ParentFont = False
-    TabOrder = 3
-    Text = '1'
   end
   object ChrMonBox: TComboBox
     Left = 224
@@ -136,12 +135,12 @@ object MainForm: TMainForm
     Font.Height = -13
     Font.Name = 'Serif'
     ItemHeight = 0
-    OnChange = ChrDayBoxChange
-    OnMouseUp = FormMouseUp
-    OnUTF8KeyPress = ChrMonBoxUTF8KeyPress
     ParentFont = False
     Style = csDropDownList
     TabOrder = 4
+    OnChange = ChrDayBoxChange
+    OnMouseUp = FormMouseUp
+    OnUTF8KeyPress = ChrMonBoxUTF8KeyPress
   end
   object ChrYearBox: TComboBox
     Left = 340
@@ -156,23 +155,23 @@ object MainForm: TMainForm
     Font.Name = 'Serif'
     ItemHeight = 0
     MaxLength = 5
+    ParentFont = False
+    TabOrder = 5
+    Text = '2012'
     OnChange = ChrYearBoxChange
     OnExit = ChrDayBoxChange
     OnKeyDown = ChrYearBoxKeyDown
     OnKeyUp = ChrYearBoxKeyUp
     OnMouseUp = FormMouseUp
     OnUTF8KeyPress = SlvDayBoxUTF8KeyPress
-    ParentFont = False
-    TabOrder = 5
-    Text = '2012'
   end
   object SorokovnikImage: TImage
     Left = 160
     Height = 170
     Top = 84
     Width = 256
-    OnMouseUp = FormMouseUp
     Visible = False
+    OnMouseUp = FormMouseUp
   end
   object SlvTimeLabel: TLabel
     Left = 16
@@ -224,22 +223,22 @@ object MainForm: TMainForm
     Font.Height = -13
     Font.Name = 'Serif'
     Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 6
     OnChange = ChrDayBoxChange
     OnMouseDown = FormMouseDown
     OnMouseMove = FormMouseMove
     OnMouseUp = FormMouseUp
-    ParentFont = False
-    TabOrder = 6
   end
   object WImage1: TImage
     Left = 160
     Height = 20
     Top = 60
     Width = 24
-    OnMouseUp = FormMouseUp
     Stretch = True
     Transparent = True
     Visible = False
+    OnMouseUp = FormMouseUp
   end
   object ChrTimeLabel: TLabel
     Left = 279
@@ -272,10 +271,9 @@ object MainForm: TMainForm
     Font.Height = -13
     Font.Name = 'Serif'
     Font.Style = [fsBold]
-    NumGlyphs = 0
+    ParentFont = False
     OnClick = SlvTimeButtonClick
     OnMouseUp = FormMouseUp
-    ParentFont = False
   end
   object SunBox: TImage
     Left = 16
@@ -294,28 +292,28 @@ object MainForm: TMainForm
   object Timer_2Hz: TTimer
     Interval = 500
     OnTimer = Timer_2HzTimer
-    left = 400
-    top = 72
+    Left = 400
+    Top = 72
   end
   object Timer_10Hz: TTimer
     Enabled = False
     Interval = 50
     OnTimer = Timer_10HzTimer
-    left = 400
-    top = 136
+    Left = 400
+    Top = 136
   end
   object XMLConfig1: TXMLConfig
-    Filename = 'kdl.xml'
     StartEmpty = False
     RootName = 'CONFIG'
-    left = 400
-    top = 200
+    ReadOnly = False
+    Left = 400
+    Top = 200
   end
   object Timer_100Hz: TTimer
     Enabled = False
     Interval = 10
     OnTimer = Timer_100HzTimer
-    left = 344
-    top = 64
+    Left = 344
+    Top = 64
   end
 end

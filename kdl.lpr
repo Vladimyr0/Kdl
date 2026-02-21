@@ -8,13 +8,15 @@ uses
   cthreads,  cmem,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, runtimetypeinfocontrols, bgrabitmappack, kdar, info, close
+  Forms, runtimetypeinfocontrols, kdar, info, close
   { you can add units after this };
 
 {$R *.res}
 
 begin
   RequireDerivedFormResource := True;
+  Application.Scaled:=True;
+  Application.Title:='Колядинъ Даръ';
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TInForm, InForm);

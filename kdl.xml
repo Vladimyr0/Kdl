@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<CONFIG>
-  <Location Place="Москва" Latitude="55.75" Longitude="37.62"/>
-  <Time_Zone GMT="4.0"/>
-  <Sound Enabled="True"/>
-  <Window OnTop="True" Pos_X="850" Pos_Y="353" Scale="1.000" Compact="False"/>
-</CONFIG>

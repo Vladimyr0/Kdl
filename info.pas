@@ -13,15 +13,16 @@ type
   { TInForm }
 
   TInForm = class(TForm)
-    procedure FormDeactivate(Sender: TObject);
-    procedure FormKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
-    procedure FormMouseDown(Sender: TObject; Button: TMouseButton;
+    procedure FormClose (Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormDeactivate (Sender: TObject);
+    procedure FormKeyDown (Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
+    procedure FormMouseDown (Sender: TObject; Button: TMouseButton;
       {%H-}Shift: TShiftState; X, Y: Integer);
-    procedure FormMouseMove(Sender: TObject; {%H-}Shift: TShiftState; X, Y: Integer);
-    procedure FormMouseUp(Sender: TObject; {%H-}Button: TMouseButton;
+    procedure FormMouseMove (Sender: TObject; {%H-}Shift: TShiftState; X, Y: Integer);
+    procedure FormMouseUp (Sender: TObject; {%H-}Button: TMouseButton;
       {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
-    procedure FormPaint(Sender: TObject);
-    procedure FormShow(Sender: TObject);
+    procedure FormPaint (Sender: TObject);
+    procedure FormShow (Sender: TObject);
   private
     { private declarations }
   public
@@ -45,7 +46,18 @@ var
 
 { TInForm }
 
-procedure TInForm.FormDeactivate(Sender: TObject);
+procedure TInForm.FormClose (Sender: TObject; var CloseAction: TCloseAction);
+begin
+  MainForm.FormStyle := fsNormal;
+  if kdar.OnTop then begin
+     Sleep (100);
+     Application.ProcessMessages;
+     MainForm.FormStyle := fsSystemStayOnTop;
+  end;
+  //MainForm.BringToFront;
+end;
+
+procedure TInForm.FormDeactivate (Sender: TObject);
 begin
   if (InForm.Height > SvitokMinHeight) or not popping then begin
      Close;
@@ -64,7 +76,7 @@ begin
   end;
 end;
 
-procedure TInForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
+procedure TInForm.FormKeyDown (Sender: TObject; var Key: Word; Shift: TShiftState
   );
 begin
   PopTick := 0;
@@ -119,7 +131,7 @@ begin
   end;
 end;
 
-procedure TInForm.FormMouseDown(Sender: TObject; Button: TMouseButton;
+procedure TInForm.FormMouseDown (Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   i: integer;
@@ -161,7 +173,7 @@ begin
   PopTick := 0;
 end;
 
-procedure TInForm.FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+procedure TInForm.FormMouseMove (Sender: TObject; Shift: TShiftState; X, Y: Integer);
 var
   h: integer;
 begin
@@ -200,7 +212,7 @@ begin
   PopTick := 0;
 end;
 
-procedure TInForm.FormMouseUp(Sender: TObject; Button: TMouseButton;
+procedure TInForm.FormMouseUp (Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   i: integer;
@@ -239,7 +251,7 @@ begin
   PopTick := 0;
 end;
 
-procedure TInForm.FormPaint(Sender: TObject);
+procedure TInForm.FormPaint (Sender: TObject);
 var
   i, j, dx, dy, h1, h2, thp: integer;
   bp: TBGRABitmap;
@@ -352,7 +364,7 @@ begin
   end;
 end;
 
-procedure TInForm.FormShow(Sender: TObject);
+procedure TInForm.FormShow (Sender: TObject);
 begin
   InfJogPos.x := 0;
   InfJogPos.y := 0;

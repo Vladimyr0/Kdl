@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Categories=Applications;Koladin Dar
+Comment=Koladin_Dar
+Version=1.0
+Exec=/home/vladimyr/kdl/kdl
+Name=Колядинъ Даръ
+Icon=/home/vladimyr/kdl/kdl1.ico
+Type=Application
+MimeType=application/kdl
+Terminal=false
