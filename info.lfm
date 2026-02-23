@@ -1,6 +1,6 @@
 object InForm: TInForm
   Left = 707
-  Height = 268
+  Height = 107
   Top = 166
   Width = 360
   BorderIcons = []

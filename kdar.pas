@@ -223,6 +223,7 @@ type
       );
     procedure FormChangeBounds (Sender: TObject);
     procedure FormCloseQuery (Sender: TObject; var CanClose: boolean);
+    procedure ApplicationDeactivate (Sender: TObject);
     procedure FormCreate (Sender: TObject);
     procedure FormDestroy (Sender: TObject);
     procedure FormKeyDown (Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -382,8 +383,6 @@ var
   MainForm: TMainForm;
   Pa_Handle: TLibHandle;
   f1, f2, f3, f4: TFreeTypeFont;
-  popping: boolean;
-  poppingstage: integer;
   fonts1: TFreeTypeFontCollection;
   AllDays: array [1..41, 0..8] of TDayStructure; // инфа о праздниках
   AllMonths: array [0..8] of string;             // инфа о месяцах
@@ -420,14 +419,15 @@ var
   pattern, PatternImage, defaultsize, startgesture: TPoint;
   patstep: TPointF;
   longshapebmp: TBitmap;
-  folded, folding, folding1, folding_left, gesture, rolling, scrolling, tomorrow: boolean;
+  folded, folding, folding1, folding_left, gesture, rolling, scrolling,
+  tomorrow, GrowUp, popping, needresize: boolean;
   foldbmp_tout, arrbmp_tout: integer;  // unit = 0.5 sec
   oldsize: TSize;
   BlockChangeEvent, IsTodayDate, Tick1, Tick2: boolean;
   After18Now, After18Old, JustStarted, JustChanged, KeyPressed: boolean;
   TodayDate, LetoLabel, LetoLabel1, LetoLabelP, LetoLabelP1,
   PalaceLabel, PalaceLabel1, FestLabel: string;
-  LetoNum, FontSize, SunTick, PopTick: integer;
+  LetoNum, FontSize, SunTick, PopTick, poppingstage: integer;
   CalPosition, BegPosition, CurPosition, PrePosition, OriPosition, JogPosition,
   CalSpeed: TPoint;
   InfCalPos, InfBegPos, InfCurPos, InfPrePos, InfOriPos, InfJogPos,
@@ -1092,6 +1092,22 @@ end;
 
 { TMainForm }
 
+procedure TMainForm.ApplicationDeactivate (Sender: TObject);
+begin
+  //if (InForm <> nil) then InForm.Close;
+  if (InForm <> nil) then begin
+    InForm.Hide;
+    FormStyle := fsNormal;
+    if OnTop then begin
+       Sleep (100);
+       Application.ProcessMessages;
+       FormStyle := fsSystemStayOnTop;
+    end;
+    if WindowState <> wsMinimized then BringToFront;
+  end;
+end;
+
+
 procedure TMainForm.FormCreate (Sender: TObject);
 var
   sunstream, fernstream, foldstream, foldstream1, stringstream,
@@ -1102,10 +1118,12 @@ var
   n: single;
 begin
   inherited;
+  Application.OnDeactivate := @ApplicationDeactivate;
   DataPointer := @Data;
   for i := 1 to 5 do
     Data.Tracks[i] := TResourceStream.Create (hInstance, 'au' + IntToStr (i), RT_RCDATA);
   Stream := nil;
+  needresize := true;
   folded := false;
   folding := false;
   folding1 := false;
@@ -1632,6 +1650,7 @@ begin
      AlphaBlend := true;
      AlphaBlendValue := (CloseCount + 1) * 255 div (MaxCloseCount + 2);
      CloseForm.Label2.Caption := IntToStr (CloseCount div 2) + ' сек.';
+     CloseForm.Show;
      if OnTop then begin
         MainForm.FormStyle := fsStayOnTop;
         CloseForm.FormStyle := fsSystemStayOnTop;
@@ -1639,7 +1658,6 @@ begin
         MainForm.FormStyle := fsNormal;
         CloseForm.FormStyle := fsNormal;
      end;
-     CloseForm.Show;
      CloseForm.BringToFront;
      CloseForm.Left := MainForm.Left + (MainForm.Width - CloseForm.Width) div 2;
      CloseForm.Top := MainForm.Top + (MainForm.Height - CloseForm.Height) div 2 + 16;
@@ -1663,32 +1681,35 @@ var
   shapebmp: TBitmap;
   j: integer;
 begin
-  if not InForm.Visible then begin
-     InForm.Show;
-     if OnTop then begin
-        MainForm.FormStyle := fsStayOnTop;
-        InForm.FormStyle := fsSystemStayOnTop;
-     end else begin
-        MainForm.FormStyle := fsNormal;
-        InForm.FormStyle := fsNormal;
-     end;
-     InForm.BringToFront;
-  end;
-  if UpTo <> InForm.Height then begin
-     shapebmp := TBitmap.Create;
-     shapebmp.Monochrome := true;
-     shapebmp.Width := InForm.Width;
-     shapebmp.Height := UpTo;
-     if InForm.GrowUp then InForm.Top := InForm.Top - UpTo + InForm.Height;
-     InForm.Height := UpTo;
-     j := UpTo - ssvitoks[2].Height;
-     shapebmp.Canvas.CopyRect (Rect (0, 0, shapebmp.Width, j),
-          longshapebmp.Canvas, Rect (0, 0, longshapebmp.Width, j));
-     shapebmp.Canvas.CopyRect (Rect (0, j, shapebmp.Width, UpTo),
-          longshapebmp.Canvas, Rect (0, SvitokMaxHeight + j - UpTo,
-                               longshapebmp.Width, SvitokMaxHeight));
-     InForm.SetShape (shapebmp);
-     if shapebmp <> nil then shapebmp.Free;
+  if (InForm <> nil) then begin
+    if not InForm.Visible then begin
+       InForm.Show;
+       if OnTop then begin
+          MainForm.FormStyle := fsNormal;
+          InForm.FormStyle := fsNormal;
+          Application.ProcessMessages;
+       end else begin
+          MainForm.FormStyle := fsNormal;
+          InForm.FormStyle := fsNormal;
+       end;
+       InForm.BringToFront;
+    end;
+    //if UpTo <> InForm.Height then begin
+       shapebmp := TBitmap.Create;
+       shapebmp.Monochrome := true;
+       shapebmp.Width := InForm.Width;
+       shapebmp.Height := UpTo;
+       if GrowUp then InForm.Top := InForm.Top - UpTo + InForm.Height;
+       InForm.Height := UpTo;
+       j := UpTo - ssvitoks[2].Height;
+       shapebmp.Canvas.CopyRect (Rect (0, 0, shapebmp.Width, j),
+            longshapebmp.Canvas, Rect (0, 0, longshapebmp.Width, j));
+       shapebmp.Canvas.CopyRect (Rect (0, j, shapebmp.Width, UpTo),
+            longshapebmp.Canvas, Rect (0, SvitokMaxHeight + j - UpTo,
+                                 longshapebmp.Width, SvitokMaxHeight));
+       InForm.SetShape (shapebmp);
+       if shapebmp <> nil then shapebmp.Free;
+    //end;
   end;
 end;
 
@@ -2078,48 +2099,54 @@ var
   i, x1, y1, dy: integer;
   p: PBGRAPixel;
 begin
+  Timer_10Hz.Enabled := false;
+  Application.ProcessMessages;
   if InForm <> nil then InForm.Free;  // для обхода глюка с пропаданием формы после нескольких вызовов
-  InForm := TInForm.Create (MainForm);
-  InForm.Height := SvitokMinHeight;
-  InForm.Width := ssvitoks[0].Width;
-  if dposition.x > (Screen.Width div 2) then x1 := 1 else x1 := -1;
-  if dposition.y > (Screen.Height div 2) then y1 := 1 else y1 := -1;
-  if x1 > 0 then InForm.Left := dposition.x - InForm.Width else InForm.Left := dposition.x;
-  if y1 > 0 then InForm.Top := dposition.y - InForm.Height else InForm.Top := dposition.y;
-  if x1 * y1 > 0 then begin
-     InForm.Left := InForm.Left - Round (InFormOffset * x1 * Scale);
-     InForm.Top := InForm.Top - Round (InFormOffset * y1 * Scale);
-  end;
-  InForm.GrowUp := (y1 > 0);
-  if longshapebmp <> nil then longshapebmp.Free;
-  longshapebmp := TBitmap.Create;
-  longshapebmp.Monochrome := true;
-  longshapebmp.Width := ssvitoks[0].Width;
-  longshapebmp.Height := SvitokMaxHeight;
-  dy := 0;
-  i := 0;
-  repeat
-    for y1 := 0 to ssvitoks[i].Height - 1 do begin
-      p := ssvitoks[i].ScanLine[y1];
-      for x1 := 0 to ssvitoks[i].Width - 1 do begin
-         if p^ = BGRAPixelTransparent then
-            longshapebmp.Canvas.Pixels[x1,y1+dy] := clBlack
-         else longshapebmp.Canvas.Pixels[x1,y1+dy] := clWhite;
-         Inc (p);
-      end;
-    end;
-    dy := dy + ssvitoks[i].Height;
-    if (i = 0) or (dy >= (SvitokMaxHeight - ssvitoks[2].Height)) then i := i + 1;
-    if dy > (SvitokMaxHeight - ssvitoks[2].Height) then
-       dy := SvitokMaxHeight - ssvitoks[2].Height;
-  until i > 2;
-  CalcText;
-  popping := true;
   poppingstage := 0;
+  popping := true;
   PopTick := 0;
-  InForm.Height := SvitokMinHeight + 1;
+  //InForm.Hide;
+  InForm := TInForm.Create (MainForm);
+  Application.ProcessMessages;
+  if InForm <> nil then  begin
+    InForm.Height := SvitokMinHeight;
+    InForm.Width := ssvitoks[0].Width;
+    if dposition.x > (Screen.Width div 2) then x1 := 1 else x1 := -1;
+    if dposition.y > (Screen.Height div 2) then y1 := 1 else y1 := -1;
+    if x1 > 0 then InForm.Left := dposition.x - InForm.Width else InForm.Left := dposition.x;
+    if y1 > 0 then InForm.Top := dposition.y - InForm.Height else InForm.Top := dposition.y;
+    if x1 * y1 > 0 then begin
+       InForm.Left := InForm.Left - Round (InFormOffset * x1 * Scale);
+       InForm.Top := InForm.Top - Round (InFormOffset * y1 * Scale);
+    end;
+    GrowUp := (y1 > 0);
+    CalcText;
+    if longshapebmp <> nil then longshapebmp.Free;
+    longshapebmp := TBitmap.Create;
+    longshapebmp.Monochrome := true;
+    longshapebmp.Width := ssvitoks[0].Width;
+    longshapebmp.Height := SvitokMaxHeight;
+    dy := 0;
+    i := 0;
+    repeat
+      for y1 := 0 to ssvitoks[i].Height - 1 do begin
+        p := ssvitoks[i].ScanLine[y1];
+        for x1 := 0 to ssvitoks[i].Width - 1 do begin
+           if p^ = BGRAPixelTransparent then
+              longshapebmp.Canvas.Pixels[x1,y1+dy] := clBlack
+           else longshapebmp.Canvas.Pixels[x1,y1+dy] := clWhite;
+           Inc (p);
+        end;
+      end;
+      dy := dy + ssvitoks[i].Height;
+      if (i = 0) or (dy >= (SvitokMaxHeight - ssvitoks[2].Height)) then i := i + 1;
+      if dy > (SvitokMaxHeight - ssvitoks[2].Height) then
+         dy := SvitokMaxHeight - ssvitoks[2].Height;
+    until i > 2;
+    ShapeSvitok (SvitokMinHeight);
+    //InForm.Height := SvitokMinHeight + 1;
+  end;
   if EnableSound then PlaySound (1, 0, false);          // звучит шелест, без повтора
-  ShapeSvitok (SvitokMinHeight);
   Timer_10Hz.Enabled := true;
 end;
 
@@ -2606,6 +2633,9 @@ begin
      end;
      CloseForm.Close;
   end;
+  if (Key = vk_Escape) and (InForm <> nil) then begin
+     if InForm.Visible then InForm.Hide;
+  end;
   if Shift = [ssCtrl] then begin
      if folded and ((Key = VK_LEFT) or (Key = VK_RIGHT)) then begin
         MainForm.Constraints.MaxWidth := unfoldedsize * 2;
@@ -2642,6 +2672,7 @@ begin
         if OnTop then MainForm.FormStyle := fsSystemStayOnTop
            else MainForm.FormStyle := fsNormal;
      end;
+     Key := 0;
      Timer_10Hz.Enabled := true;
   end;
 end;
@@ -2654,6 +2685,7 @@ begin
   if Sender = Mainform then begin
      x1 := X;
      y1 := Y;
+     needresize := true;
   end else begin
      x1 := X + TControl (Sender).Left;
      y1 := Y + TControl (Sender).Top;
@@ -3029,7 +3061,8 @@ begin
     SunTick := 0;
     ScaleCorrection := true;
   end;
-  Invalidate;
+  if not (folded or folding) then ActiveControl := SlvMonBox;
+  if needresize then Timer_100Hz.Enabled := true;
 end;
 
 procedure TMainForm.SlvDayBoxChange (Sender: TObject);
@@ -3192,6 +3225,11 @@ begin
      DataPointer^.CurSample := 0;
   end;
   Timer_100Hz.Enabled := false;
+  if needresize then begin
+     needresize := false;
+     FormResize (Sender);
+     needresize := true;
+  end;
 end;
 
 procedure TMainForm.CalcClock (CurrTime: single);
@@ -3677,6 +3715,11 @@ begin
         CloseForm.Top := MainForm.Top + (MainForm.Height - CloseForm.Height) div 2 + 16;
         if CloseCount > 0 then begin
            CloseForm.Label2.Caption := IntToStr (CloseCount div 2) + ' сек.';
+           if OnTop then begin
+              MainForm.FormStyle := fsStayOnTop;
+              CloseForm.FormStyle := fsSystemStayOnTop;
+           end;
+           CloseForm.BringToFront;
            Dec (CloseCount);
            AlphaBlendValue := (CloseCount + 1) * 255 div (MaxCloseCount + 2);
         end else begin
@@ -3928,7 +3971,11 @@ begin
      end;
      Invalidate;
   end;
-  if popping and (InForm <> nil) then begin
+  if popping and (InForm <> nil) and (InForm.Visible) then begin
+     if OnTop and (poppingstage = 0) then begin
+        MainForm.FormStyle := fsNormal;
+        InForm.FormStyle := fsSystemStayOnTop;
+     end;
      case poppingstage of
        0: if InForm.Height < Min ((SvitokHeight + TitleHeight * Scale), SvitokMaxHeight) then begin
              j := InForm.Height + Round (Foldingstep * Scale);
@@ -3944,7 +3991,12 @@ begin
           end else begin
              Inc (poppingstage);
              popping := false; // off ?
-             InForm.GrowUp := false;
+             GrowUp := false;
+             if OnTop then begin
+                MainForm.FormStyle := fsSystemStayOnTop;
+                InForm.FormStyle := fsSystemStayOnTop;
+                InForm.BringToFront;
+             end;
           end;
        otherwise if InForm.Height > SvitokMinHeight then begin
              j := InForm.Height - Foldingstep;
@@ -3953,16 +4005,19 @@ begin
           end else begin
              poppingstage := 0;
              popping := false; // off ?
-             InForm.GrowUp := false;
-             InForm.Close;
-             if textbmp <> nil then textbmp.Free;
-             if textbmpjammed <> nil then textbmpjammed.Free;
-             if textbmpheader <> nil then textbmpheader.Free;
-             if textbmpfooter <> nil then textbmpfooter.Free;
-             textbmp := nil;
-             textbmpjammed := nil;
-             textbmpheader := nil;
-             textbmpfooter := nil;
+             if (InForm <> nil) then begin
+               GrowUp := false;
+               //InForm.Close;
+               InForm.Hide;
+             end;
+             //if textbmp <> nil then textbmp.Free;
+             //if textbmpjammed <> nil then textbmpjammed.Free;
+             //if textbmpheader <> nil then textbmpheader.Free;
+             //if textbmpfooter <> nil then textbmpfooter.Free;
+             //textbmp := nil;
+             //textbmpjammed := nil;
+             //textbmpheader := nil;
+             //textbmpfooter := nil;
           end;
      end;
   end;
@@ -4026,16 +4081,18 @@ begin
         FlipToX := 0;
         if Abs (px) > (maxx div 2) then begin    // переключение информации
            InfAttrY := false; // off ?
-           InForm.Invalidate;
+           if (InForm <> nil) then InForm.Invalidate;
            Application.ProcessMessages;
            InfCalPos.y := 0;
            InfCurPos.y := 0;
            InfSpeed.y := 0;
            SwitchInf (0, Sign (px));
-           CalcText;
-           if textbmp = nil then maxy := 0 else
-              maxy := textbmp.Height - InForm.Height + ssvitoks[0].Height + ssvitoks[2].Height;
-           if maxy < 0 then maxy := 0;
+           if InForm <> nil then CalcText;
+           if (InForm <> nil) then begin
+                 if textbmp = nil then maxy := 0 else
+                 maxy := textbmp.Height - InForm.Height + ssvitoks[0].Height + ssvitoks[2].Height;
+              if maxy < 0 then maxy := 0;
+           end;
         end;
         InfSpeed.x := 0;
         InfCalPos.x := 0;
@@ -4063,7 +4120,7 @@ begin
         if InfCalPos.y < 0 then InfCalPos.y := 0
            else if InfCalPos.y > maxy then InfCalPos.y := maxy;
      end;
-     InForm.Invalidate;
+     if (InForm <> nil) then InForm.Invalidate;
   end;
   if not (folding1 or rolling or (CalSpeed.x <> 0) or (CalSpeed.y <> 0)
      or AttractionX or AttractionY or popping or scrolling

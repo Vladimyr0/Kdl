@@ -27,7 +27,6 @@ type
     { private declarations }
   public
     { public declarations }
-    GrowUp: boolean;
   end;
 
 var
@@ -54,25 +53,28 @@ begin
      Application.ProcessMessages;
      MainForm.FormStyle := fsSystemStayOnTop;
   end;
-  //MainForm.BringToFront;
+  MainForm.BringToFront;
 end;
 
 procedure TInForm.FormDeactivate (Sender: TObject);
 begin
-  if (InForm.Height > SvitokMinHeight) or not popping then begin
-     Close;
-     if popping and not (rolling or folding or scrolling or ((CalSpeed.x <> 0)
-     or (CalSpeed.y <> 0) or AttractionX or AttractionY)) then
-        MainForm.Timer_10Hz.Enabled := false;
-     popping := false;
-     if textbmp <> nil then textbmp.Free;
-     if textbmpjammed <> nil then textbmpjammed.Free;
-     if textbmpheader <> nil then textbmpheader.Free;
-     if textbmpfooter <> nil then textbmpfooter.Free;
-     textbmp := nil;
-     textbmpjammed := nil;
-     textbmpheader := nil;
-     textbmpfooter := nil;
+  if (InForm <> nil) then begin
+     if (InForm.Height > SvitokMinHeight) or not popping then begin
+        if popping and not (rolling or folding or scrolling or ((CalSpeed.x <> 0)
+        or (CalSpeed.y <> 0) or AttractionX or AttractionY)) then
+           MainForm.Timer_10Hz.Enabled := false;
+           popping := false;
+           //if textbmp <> nil then textbmp.Free;
+           //if textbmpjammed <> nil then textbmpjammed.Free;
+           //if textbmpheader <> nil then textbmpheader.Free;
+           //if textbmpfooter <> nil then textbmpfooter.Free;
+           //textbmp := nil;
+           //textbmpjammed := nil;
+           //textbmpheader := nil;
+           //textbmpfooter := nil;
+           Hide;
+           //Close;
+     end;
   end;
 end;
 
@@ -81,19 +83,20 @@ procedure TInForm.FormKeyDown (Sender: TObject; var Key: Word; Shift: TShiftStat
 begin
   PopTick := 0;
   If Key = vk_Escape then begin
-     Close;
+     //Close;
+     Hide;
      if popping and not (rolling or folding or scrolling or ((CalSpeed.x <> 0)
         or (CalSpeed.y <> 0) or AttractionX or AttractionY)) then
         MainForm.Timer_10Hz.Enabled := false;
      popping := false;
-     if textbmp <> nil then textbmp.Free;
-     if textbmpjammed <> nil then textbmpjammed.Free;
-     if textbmpheader <> nil then textbmpheader.Free;
-     if textbmpfooter <> nil then textbmpfooter.Free;
-     textbmp := nil;
-     textbmpjammed := nil;
-     textbmpheader := nil;
-     textbmpfooter := nil;
+     //if textbmp <> nil then textbmp.Free;
+     //if textbmpjammed <> nil then textbmpjammed.Free;
+     //if textbmpheader <> nil then textbmpheader.Free;
+     //if textbmpfooter <> nil then textbmpfooter.Free;
+     //textbmp := nil;
+     //textbmpjammed := nil;
+     //textbmpheader := nil;
+     //textbmpfooter := nil;
   end else if (Key = vk_Right) and (SwitchKind in Switchable) then begin // чпок вправо
      InfAttrX := true;
      InfSpeed.x := InfSpeed.x - 1;
@@ -256,6 +259,7 @@ var
   i, j, dx, dy, h1, h2, thp: integer;
   bp: TBGRABitmap;
 begin
+  inherited;
   i := 0;
   dy := 0;
   repeat

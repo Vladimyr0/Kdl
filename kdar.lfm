@@ -11,9 +11,14 @@ object MainForm: TMainForm
   Constraints.MaxWidth = 864
   Constraints.MinHeight = 336
   Constraints.MinWidth = 432
+  DoubleBuffered = True
+  FormStyle = fsStayOnTop
   KeyPreview = True
+  ParentDoubleBuffered = False
+  Position = poDefault
   ShowHint = True
   LCLVersion = '4.4.0.0'
+  Visible = True
   OnChangeBounds = FormChangeBounds
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
@@ -39,17 +44,15 @@ object MainForm: TMainForm
     Height = 24
     Hint = 'Число по Славянскому календарю'
     Top = 24
-    Width = 56
+    Width = 72
     AutoSelect = False
     AutoSize = False
     Color = 15526851
     Font.Height = -13
     Font.Name = 'Serif'
     ItemHeight = 0
-    MaxLength = 2
     ParentFont = False
     TabOrder = 0
-    Text = 'g1'
     OnChange = SlvDayBoxChange
     OnKeyDown = SlvDayBoxKeyDown
     OnKeyUp = SlvDayBoxKeyUp
@@ -58,11 +61,11 @@ object MainForm: TMainForm
     OnUTF8KeyPress = SlvDayBoxUTF8KeyPress
   end
   object SlvMonBox: TComboBox
-    Left = 224
+    Left = 238
     Height = 24
     Hint = 'Сороковник по Славянскому календарю'
     Top = 24
-    Width = 108
+    Width = 100
     AutoSelect = False
     AutoSize = False
     Color = 15526851
@@ -78,7 +81,7 @@ object MainForm: TMainForm
     OnUTF8KeyPress = SlvMonBoxUTF8KeyPress
   end
   object SlvYearBox: TComboBox
-    Left = 340
+    Left = 344
     Height = 24
     Hint = 'Лѣто по Славянскому календарю'
     Top = 24
@@ -106,7 +109,7 @@ object MainForm: TMainForm
     Height = 24
     Hint = 'Число по гражд. календарю'
     Top = 264
-    Width = 56
+    Width = 72
     AutoSelect = False
     AutoSize = False
     Color = 15526851
@@ -124,11 +127,11 @@ object MainForm: TMainForm
     OnUTF8KeyPress = SlvDayBoxUTF8KeyPress
   end
   object ChrMonBox: TComboBox
-    Left = 224
+    Left = 238
     Height = 24
     Hint = 'Месяц по гражд. календарю'
     Top = 264
-    Width = 108
+    Width = 100
     AutoSelect = False
     AutoSize = False
     Color = 15526851
@@ -143,7 +146,7 @@ object MainForm: TMainForm
     OnUTF8KeyPress = ChrMonBoxUTF8KeyPress
   end
   object ChrYearBox: TComboBox
-    Left = 340
+    Left = 344
     Height = 24
     Hint = 'Год по гражд. календарю'
     Top = 264
@@ -265,6 +268,8 @@ object MainForm: TMainForm
     Hint = 'Нынче <Ctrl+Ы>'
     Top = 302
     Width = 63
+    BorderSpacing.Around = 9
+    BorderSpacing.InnerBorder = 5
     Caption = '15:142'
     Flat = True
     Font.Color = clNavy

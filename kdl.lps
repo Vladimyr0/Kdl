@@ -3,13 +3,14 @@
   <ProjectSession>
     <Version Value="12"/>
     <BuildModes Active="Default"/>
-    <Units Count="41">
+    <Units Count="38">
       <Unit0>
         <Filename Value="kdl.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos Y="23"/>
+        <EditorIndex Value="2"/>
+        <CursorPos X="19" Y="24"/>
         <UsageCount Value="205"/>
+        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="kdar.pas"/>
@@ -18,19 +19,20 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="2005"/>
-        <CursorPos X="61" Y="2028"/>
+        <TopLine Value="3197"/>
+        <CursorPos X="31" Y="3204"/>
         <UsageCount Value="205"/>
-        <Bookmarks Count="9">
-          <Item0 Y="1071" ID="6"/>
-          <Item1 X="26" Y="1477"/>
-          <Item2 X="30" Y="1783" ID="8"/>
-          <Item3 X="9" Y="3762" ID="7"/>
-          <Item4 X="9" Y="3850" ID="5"/>
-          <Item5 X="29" Y="3931" Left="1" Top="3922" ID="1"/>
-          <Item6 X="14" Y="1628" Left="1" Top="1604" ID="2"/>
-          <Item7 X="24" Y="3717" Left="1" Top="3686" ID="3"/>
-          <Item8 X="33" Y="526" Left="1" Top="499" ID="4"/>
+        <Bookmarks Count="10">
+          <Item0 X="26" Y="1495"/>
+          <Item1 X="28" Y="4002" Left="1" Top="3982" ID="3"/>
+          <Item2 X="11" Y="1697" Left="1" Top="1674" ID="4"/>
+          <Item3 X="14" Y="1990" Left="1" Top="1964" ID="5"/>
+          <Item4 X="32" Y="2627" Left="1" Top="2614" ID="6"/>
+          <Item5 X="38" Y="2670" Left="1" Top="2645" ID="7"/>
+          <Item6 X="39" Y="3848" Left="1" Top="3821" ID="8"/>
+          <Item7 X="40" Y="1104" Left="1" Top="1074" ID="9"/>
+          <Item8 X="41" Y="3229" Left="1" Top="3191" ID="2"/>
+          <Item9 X="33" Y="3057" Left="1" Top="3022" ID="1"/>
         </Bookmarks>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -41,9 +43,9 @@
         <ComponentName Value="InForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="4"/>
-        <TopLine Value="249"/>
-        <CursorPos X="34" Y="269"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="340"/>
+        <CursorPos Y="391"/>
         <UsageCount Value="209"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -54,7 +56,8 @@
         <ComponentName Value="CloseForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="10"/>
         <CursorPos X="41" Y="38"/>
         <UsageCount Value="284"/>
         <Loaded Value="True"/>
@@ -66,382 +69,365 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="46"/>
+        <UsageCount Value="43"/>
         <DefaultSyntaxHighlighter Value="XML"/>
       </Unit4>
       <Unit5>
         <Filename Value="/windows/Users/Vladimyr/AppData/Local/Docs/Data/Progs/KLD/Kaldar.pas"/>
         <TopLine Value="1887"/>
         <CursorPos X="32" Y="1894"/>
-        <UsageCount Value="33"/>
+        <UsageCount Value="30"/>
       </Unit5>
       <Unit6>
         <Filename Value="dynportaudio/mainunitsine.pas"/>
         <UnitName Value="MainUnitSine"/>
         <TopLine Value="148"/>
         <CursorPos X="19" Y="375"/>
-        <UsageCount Value="40"/>
+        <UsageCount Value="37"/>
       </Unit6>
       <Unit7>
         <Filename Value="dynportaudio/lazdyn_portaudio.pas"/>
         <UnitName Value="LazDyn_PortAudio"/>
         <TopLine Value="280"/>
         <CursorPos X="54" Y="305"/>
-        <UsageCount Value="40"/>
+        <UsageCount Value="37"/>
       </Unit7>
       <Unit8>
         <Filename Value="/usr/share/fpcsrc/2.6.0/rtl/objpas/classes/classesh.inc"/>
         <TopLine Value="851"/>
         <CursorPos X="3" Y="877"/>
-        <UsageCount Value="4"/>
+        <UsageCount Value="1"/>
       </Unit8>
       <Unit9>
-        <Filename Value="/usr/share/lazarus/1.0.4/lcl/include/control.inc"/>
-        <TopLine Value="3907"/>
-        <CursorPos Y="3933"/>
-        <UsageCount Value="2"/>
-      </Unit9>
-      <Unit10>
-        <Filename Value="/usr/share/lazarus/1.0.4/lcl/include/speedbutton.inc"/>
-        <TopLine Value="878"/>
-        <CursorPos Y="906"/>
-        <UsageCount Value="2"/>
-      </Unit10>
-      <Unit11>
-        <Filename Value="/usr/share/lazarus/1.0.4/lcl/include/wincontrol.inc"/>
-        <TopLine Value="7638"/>
-        <CursorPos Y="7665"/>
-        <UsageCount Value="2"/>
-      </Unit11>
-      <Unit12>
         <Filename Value="/usr/share/lazarus/1.0.4/lcl/include/customform.inc"/>
         <TopLine Value="2043"/>
         <CursorPos Y="2070"/>
-        <UsageCount Value="3"/>
-      </Unit12>
-      <Unit13>
-        <Filename Value="/usr/share/lazarus/1.0.4/lcl/lclmessageglue.pas"/>
-        <UnitName Value="LCLMessageGlue"/>
-        <TopLine Value="99"/>
-        <CursorPos Y="128"/>
-        <UsageCount Value="2"/>
-      </Unit13>
-      <Unit14>
-        <Filename Value="/usr/share/lazarus/1.0.4/lcl/interfaces/gtk2/gtk2proc.inc"/>
-        <TopLine Value="3628"/>
-        <CursorPos X="11" Y="3656"/>
-        <UsageCount Value="2"/>
-      </Unit14>
-      <Unit15>
-        <Filename Value="/usr/share/lazarus/1.0.4/lcl/interfaces/gtk2/gtk2callback.inc"/>
-        <TopLine Value="2390"/>
-        <CursorPos Y="2415"/>
-        <UsageCount Value="2"/>
-      </Unit15>
-      <Unit16>
-        <Filename Value="/usr/share/lazarus/1.0.4/lcl/interfaces/gtk2/gtk2widgetset.inc"/>
-        <TopLine Value="2288"/>
-        <CursorPos Y="2313"/>
-        <UsageCount Value="2"/>
-      </Unit16>
-      <Unit17>
+        <UsageCount Value="10"/>
+      </Unit9>
+      <Unit10>
         <Filename Value="portaudio/src/common/pa_front.c"/>
         <TopLine Value="155"/>
         <CursorPos Y="193"/>
-        <UsageCount Value="73"/>
+        <UsageCount Value="70"/>
         <DefaultSyntaxHighlighter Value="C_2B_2B"/>
-      </Unit17>
-      <Unit18>
+      </Unit10>
+      <Unit11>
         <Filename Value="/usr/share/lazarus/1.0.4/lcl/forms.pp"/>
         <UnitName Value="Forms"/>
         <TopLine Value="1085"/>
         <CursorPos X="44" Y="1111"/>
-        <UsageCount Value="6"/>
-      </Unit18>
-      <Unit19>
+        <UsageCount Value="3"/>
+      </Unit11>
+      <Unit12>
         <Filename Value="/usr/share/lazarus/1.0.4/lcl/lmessages.pp"/>
         <UnitName Value="LMessages"/>
         <TopLine Value="456"/>
         <CursorPos X="10" Y="479"/>
-        <UsageCount Value="8"/>
-      </Unit19>
-      <Unit20>
+        <UsageCount Value="5"/>
+      </Unit12>
+      <Unit13>
         <Filename Value="bgrabitmap/bgrafreetype.pas"/>
         <UnitName Value="BGRAFreeType"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="113"/>
         <CursorPos X="14" Y="128"/>
-        <UsageCount Value="10"/>
-      </Unit20>
-      <Unit21>
+        <UsageCount Value="7"/>
+      </Unit13>
+      <Unit14>
         <Filename Value="/usr/share/lazarus/1.0.12/components/lazutils/easylazfreetype.pas"/>
         <UnitName Value="EasyLazFreeType"/>
         <TopLine Value="1147"/>
         <CursorPos X="37" Y="1172"/>
-        <UsageCount Value="8"/>
-      </Unit21>
-      <Unit22>
+        <UsageCount Value="5"/>
+      </Unit14>
+      <Unit15>
         <Filename Value="bgrabitmap/bgrabitmappack.pas"/>
         <UnitName Value="BGRABitmapPack"/>
         <CursorPos X="39" Y="27"/>
-        <UsageCount Value="13"/>
-      </Unit22>
-      <Unit23>
+        <UsageCount Value="10"/>
+      </Unit15>
+      <Unit16>
         <Filename Value="/usr/share/lazarus/1.0.12/lcl/include/buttoncontrol.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="10"/>
         <CursorPos Y="56"/>
-        <UsageCount Value="3"/>
-      </Unit23>
-      <Unit24>
+        <UsageCount Value="10"/>
+      </Unit16>
+      <Unit17>
         <Filename Value="/usr/share/lazarus/1.0.12/lcl/include/customcheckbox.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="126"/>
         <CursorPos Y="153"/>
-        <UsageCount Value="3"/>
-      </Unit24>
-      <Unit25>
+        <UsageCount Value="10"/>
+      </Unit17>
+      <Unit18>
         <Filename Value="../.lazarus/components/sparta/dockedformeditor/source/sparta_reg_dockedformeditor.pas"/>
         <UnitName Value="sparta_reg_DockedFormEditor"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="37"/>
         <CursorPos X="20" Y="55"/>
-        <UsageCount Value="3"/>
-      </Unit25>
-      <Unit26>
+        <UsageCount Value="10"/>
+      </Unit18>
+      <Unit19>
         <Filename Value="bgrabitmap/bgrabitmaptypes.pas"/>
         <UnitName Value="BGRABitmapTypes"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="3"/>
-      </Unit26>
-      <Unit27>
+        <UsageCount Value="10"/>
+      </Unit19>
+      <Unit20>
         <Filename Value="bgrabitmap/bgrapen.pas"/>
         <UnitName Value="BGRAPen"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="1079"/>
         <CursorPos X="36" Y="1087"/>
-        <UsageCount Value="3"/>
-      </Unit27>
-      <Unit28>
+        <UsageCount Value="10"/>
+      </Unit20>
+      <Unit21>
         <Filename Value="bgrabitmap/bgraopengl3d.pas"/>
         <UnitName Value="BGRAOpenGL3D"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="502"/>
         <CursorPos X="18" Y="542"/>
-        <UsageCount Value="3"/>
-      </Unit28>
-      <Unit29>
+        <UsageCount Value="10"/>
+      </Unit21>
+      <Unit22>
         <Filename Value="bgrabitmap/bgrapixel.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="22"/>
         <CursorPos X="3" Y="31"/>
-        <UsageCount Value="3"/>
-      </Unit29>
-      <Unit30>
+        <UsageCount Value="10"/>
+      </Unit22>
+      <Unit23>
         <Filename Value="bgrabitmap/bgracustomtextfx.pas"/>
         <UnitName Value="BGRACustomTextFX"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="24" Y="15"/>
-        <UsageCount Value="3"/>
-      </Unit30>
-      <Unit31>
+        <UsageCount Value="10"/>
+      </Unit23>
+      <Unit24>
         <Filename Value="bgrabitmap/phongdrawsse.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="22" Y="117"/>
-        <UsageCount Value="3"/>
-      </Unit31>
-      <Unit32>
+        <UsageCount Value="10"/>
+      </Unit24>
+      <Unit25>
         <Filename Value="bgrabitmap/phongdraw.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="246"/>
         <CursorPos X="76" Y="274"/>
-        <UsageCount Value="3"/>
-      </Unit32>
-      <Unit33>
+        <UsageCount Value="10"/>
+      </Unit25>
+      <Unit26>
         <Filename Value="bgrabitmap/bgragradients.pas"/>
         <UnitName Value="BGRAGradients"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="221"/>
         <CursorPos X="36" Y="242"/>
-        <UsageCount Value="3"/>
-      </Unit33>
-      <Unit34>
+        <UsageCount Value="10"/>
+      </Unit26>
+      <Unit27>
         <Filename Value="bgrabitmap/bgrapolygon.pas"/>
         <UnitName Value="BGRAPolygon"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="1012"/>
         <CursorPos X="42" Y="1033"/>
-        <UsageCount Value="3"/>
-      </Unit34>
-      <Unit35>
+        <UsageCount Value="10"/>
+      </Unit27>
+      <Unit28>
         <Filename Value="Leto.txt"/>
         <EditorIndex Value="1"/>
         <TopLine Value="346"/>
         <CursorPos X="43" Y="355"/>
-        <UsageCount Value="48"/>
+        <UsageCount Value="67"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Text"/>
-      </Unit35>
-      <Unit36>
+      </Unit28>
+      <Unit29>
         <Filename Value="../StudioProjects/kda/app/src/main/res/values/strings.xml"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="3"/>
         <TopLine Value="244"/>
         <CursorPos X="29" Y="257"/>
-        <UsageCount Value="48"/>
+        <UsageCount Value="67"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="XML"/>
-      </Unit36>
-      <Unit37>
+      </Unit29>
+      <Unit30>
         <Filename Value="bgrabitmap/bgrautf8.pas"/>
         <UnitName Value="BGRAUTF8"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="24" Y="7"/>
-        <UsageCount Value="6"/>
-      </Unit37>
-      <Unit38>
+        <UsageCount Value="3"/>
+      </Unit30>
+      <Unit31>
         <Filename Value="../.lazarus/onlinepackagemanager/packages/BGRABitmap/bgrabitmap/bgrabitmaptypes.pas"/>
         <UnitName Value="BGRABitmapTypes"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="41" Y="33"/>
-        <UsageCount Value="7"/>
-      </Unit38>
-      <Unit39>
+        <UsageCount Value="4"/>
+      </Unit31>
+      <Unit32>
         <Filename Value="../.lazarus/onlinepackagemanager/packages/BGRABitmap/bgrabitmap/universaldrawer.pas"/>
         <UnitName Value="UniversalDrawer"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="36" Y="12"/>
-        <UsageCount Value="6"/>
-      </Unit39>
-      <Unit40>
+        <UsageCount Value="3"/>
+      </Unit32>
+      <Unit33>
         <Filename Value="../.lazarus/onlinepackagemanager/packages/BGRABitmap/bgrabitmap/bgraunicode.pas"/>
         <UnitName Value="BGRAUnicode"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="1127"/>
         <CursorPos X="19" Y="1151"/>
-        <UsageCount Value="6"/>
-      </Unit40>
+        <UsageCount Value="3"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="/usr/share/lazarus/4.4.0/lcl/include/customform.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="1853"/>
+        <CursorPos X="29" Y="1874"/>
+        <UsageCount Value="11"/>
+      </Unit34>
+      <Unit35>
+        <Filename Value="/usr/share/lazarus/4.4.0/lcl/lclmessageglue.pas"/>
+        <UnitName Value="LCLMessageGlue"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="95"/>
+        <CursorPos X="45" Y="110"/>
+        <UsageCount Value="7"/>
+      </Unit35>
+      <Unit36>
+        <Filename Value="/usr/share/lazarus/4.4.0/components/lazutils/lazmethodlist.pas"/>
+        <UnitName Value="LazMethodList"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="101"/>
+        <CursorPos X="75" Y="115"/>
+        <UsageCount Value="17"/>
+      </Unit36>
+      <Unit37>
+        <Filename Value="/usr/share/fpcsrc/3.2.2/rtl/inc/objpash.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="174"/>
+        <CursorPos X="93" Y="206"/>
+        <UsageCount Value="11"/>
+      </Unit37>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="29" HistoryIndex="28">
       <Position1>
         <Filename Value="kdar.pas"/>
-        <Caret Line="649" Column="38" TopLine="626"/>
+        <Caret Line="1657" Column="49" TopLine="1627"/>
       </Position1>
       <Position2>
         <Filename Value="kdar.pas"/>
-        <Caret Line="1163" Column="15" TopLine="1135"/>
+        <Caret Line="2632" Column="48" TopLine="2593"/>
       </Position2>
       <Position3>
         <Filename Value="kdar.pas"/>
-        <Caret Line="1261" TopLine="1236"/>
+        <Caret Line="2673" Column="62" TopLine="2635"/>
       </Position3>
       <Position4>
         <Filename Value="kdar.pas"/>
-        <Caret Line="1572" Column="79" TopLine="1541"/>
+        <Caret Line="3715" Column="55" TopLine="3695"/>
       </Position4>
       <Position5>
         <Filename Value="kdar.pas"/>
-        <Caret Line="3195" Column="107" TopLine="3161"/>
+        <Caret Line="3743" Column="51" TopLine="3705"/>
       </Position5>
       <Position6>
         <Filename Value="kdar.pas"/>
-        <Caret Line="3931" Column="29" TopLine="3890"/>
+        <Caret Line="3981" Column="68" TopLine="3969"/>
       </Position6>
       <Position7>
         <Filename Value="kdar.pas"/>
-        <Caret Line="532" Column="16" TopLine="518"/>
+        <Caret Line="3059" Column="125" TopLine="3027"/>
       </Position7>
       <Position8>
         <Filename Value="kdar.pas"/>
-        <Caret Line="3203" Column="128" TopLine="3169"/>
+        <Caret Line="3835" Column="45" TopLine="3655"/>
       </Position8>
       <Position9>
         <Filename Value="kdar.pas"/>
-        <Caret Line="3931" Column="29" TopLine="3565"/>
+        <Caret Line="3221" Column="11" TopLine="3195"/>
       </Position9>
       <Position10>
         <Filename Value="kdar.pas"/>
-        <Caret Line="349" Column="21" TopLine="319"/>
+        <Caret Line="3853" Column="37" TopLine="3830"/>
       </Position10>
       <Position11>
         <Filename Value="kdar.pas"/>
-        <Caret Line="3453" Column="62" TopLine="3446"/>
+        <Caret Line="2968" Column="37" TopLine="2943"/>
       </Position11>
       <Position12>
-        <Filename Value="info.pas"/>
-        <Caret Line="284" Column="62" TopLine="260"/>
+        <Filename Value="kdar.pas"/>
+        <Caret Line="456" Column="12" TopLine="430"/>
       </Position12>
       <Position13>
-        <Filename Value="info.pas"/>
-        <Caret Line="285" Column="68" TopLine="260"/>
+        <Filename Value="kdar.pas"/>
+        <Caret Line="1195" Column="12" TopLine="1190"/>
       </Position13>
       <Position14>
-        <Filename Value="info.pas"/>
-        <Caret Line="70" Column="48" TopLine="46"/>
+        <Filename Value="kdar.pas"/>
+        <Caret Line="2954" Column="26" TopLine="2945"/>
       </Position14>
       <Position15>
-        <Filename Value="info.pas"/>
-        <Caret Line="74" Column="19" TopLine="46"/>
+        <Filename Value="kdar.pas"/>
+        <Caret Line="2978" Column="19" TopLine="2950"/>
       </Position15>
       <Position16>
-        <Filename Value="info.pas"/>
-        <Caret Line="91" Column="48" TopLine="51"/>
+        <Filename Value="kdar.pas"/>
+        <Caret Line="2954" Column="48" TopLine="2946"/>
       </Position16>
       <Position17>
-        <Filename Value="info.pas"/>
-        <Caret Line="95" Column="19" TopLine="55"/>
+        <Filename Value="kdar.pas"/>
+        <Caret Line="2950" Column="95" TopLine="2928"/>
       </Position17>
       <Position18>
-        <Filename Value="info.pas"/>
-        <Caret Line="274" Column="19" TopLine="234"/>
+        <Filename Value="kdar.pas"/>
+        <Caret Line="3036" Column="51" TopLine="3023"/>
       </Position18>
       <Position19>
-        <Filename Value="info.pas"/>
-        <Caret Line="277" Column="30" TopLine="237"/>
+        <Filename Value="kdar.pas"/>
+        <Caret Line="3218" Column="56" TopLine="3194"/>
       </Position19>
       <Position20>
         <Filename Value="kdar.pas"/>
-        <Caret Line="3376" Column="58" TopLine="3365"/>
+        <Caret Line="3065" Column="18" TopLine="3034"/>
       </Position20>
       <Position21>
         <Filename Value="kdar.pas"/>
-        <Caret Line="3960" Column="56" TopLine="3921"/>
+        <Caret Line="2950" Column="72" TopLine="2975"/>
       </Position21>
       <Position22>
         <Filename Value="kdar.pas"/>
-        <Caret Line="3964" Column="27" TopLine="3925"/>
+        <Caret Line="3227" Column="43" TopLine="3191"/>
       </Position22>
       <Position23>
         <Filename Value="kdar.pas"/>
-        <Caret Line="418" Column="71" TopLine="394"/>
+        <Caret Line="420" Column="40" TopLine="399"/>
       </Position23>
       <Position24>
         <Filename Value="kdar.pas"/>
-        <Caret Line="1567" Column="45" TopLine="1527"/>
+        <Caret Line="1148" Column="121" TopLine="1125"/>
       </Position24>
       <Position25>
         <Filename Value="kdar.pas"/>
-        <Caret Line="2025" Column="81" TopLine="1986"/>
+        <Caret Line="1126" Column="20" TopLine="1126"/>
       </Position25>
       <Position26>
         <Filename Value="kdar.pas"/>
-        <Caret Line="3960" Column="56" TopLine="3921"/>
+        <Caret Line="3064" Column="22" TopLine="3030"/>
       </Position26>
       <Position27>
         <Filename Value="kdar.pas"/>
-        <Caret Line="3964" Column="27" TopLine="3925"/>
+        <Caret Line="3230" TopLine="3196"/>
       </Position27>
       <Position28>
         <Filename Value="kdar.pas"/>
-        <Caret Line="418" Column="71" TopLine="394"/>
+        <Caret Line="2688" TopLine="2666"/>
       </Position28>
       <Position29>
         <Filename Value="kdar.pas"/>
-        <Caret Line="1567" Column="45" TopLine="1527"/>
+        <Caret Line="3057" Column="33" TopLine="3029"/>
       </Position29>
-      <Position30>
-        <Filename Value="kdar.pas"/>
-        <Caret Line="2022" Column="40" TopLine="1995"/>
-      </Position30>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
